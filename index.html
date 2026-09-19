@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA FIT AI - Cửa Hàng Thời Trang & Tư Vấn Mặc Thử Ảo IDM-VTON</title>
+  <meta name="description" content="Website thời trang tư vấn phối đồ cá nhân hóa kết hợp thử đồ ảo IDM-VTON và bộ khung đánh giá thẩm mỹ 6 chiều A100 (CVPR 2022).">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Chart.js CDN for A100 Aesthetic Radar -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <header class="navbar">
+      <a href="#" class="brand-logo" onclick="location.reload();">
+        <div class="logo-icon">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <div class="brand-title gradient-text">AURA FIT AI</div>
+          <div class="brand-subtitle">Smart Fashion Catalog • IDM-VTON Virtual Try-On • A100 Framework</div>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <div class="badge-academic">
+          <i class="fa-solid fa-award"></i> CVPR 2022 A100 Framework
+        </div>
+        <button class="btn btn-outline" id="open-arch-modal-btn">
+          <i class="fa-solid fa-diagram-project"></i> Kiến Trúc Mô Hình AI
+        </button>
+      </div>
+    </header>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 1: DANH SÁCH SẢN PHẨM CỬA HÀNG (CATALOG VIEW)                  -->
+    <!-- =================================================================== -->
+    <main class="view-section active" id="view-catalog">
+      
+      <div class="catalog-header-banner">
+        <div>
+          <h1 style="font-size: 1.8rem; margin-bottom: 6px;">Cửa Hàng Thời Trang AURA Studio</h1>
+          <p style="font-size: 0.95rem; color: var(--text-sub);">
+            Chọn bất kỳ sản phẩm nào bên dưới để mở <strong>Phòng Thử Đồ Ảo IDM-VTON</strong> và nhận tư vấn phối đồ cá nhân hóa từ AI!
+          </p>
+        </div>
+        <div style="font-size: 2.5rem; color: var(--primary);">
+          <i class="fa-solid fa-shirt"></i>
+        </div>
+      </div>
+
+      <div class="catalog-filter-bar">
+        <div class="category-tabs">
+          <button class="tab-btn active" data-filter-tab="all">Tất Cả Sản Phẩm</button>
+          <button class="tab-btn" data-filter-tab="top">Áo & Blazer</button>
+          <button class="tab-btn" data-filter-tab="bottom">Quần & Chân Váy</button>
+          <button class="tab-btn" data-filter-tab="shoes">Giày & Loafer</button>
+          <button class="tab-btn" data-filter-tab="bag">Túi Xách</button>
+        </div>
+
+        <div style="font-size: 0.85rem; color: var(--text-muted);">
+          Bấm vào từng sản phẩm để <strong>Mặc Thử & Tư Vấn AI</strong>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="catalog-grid" id="catalog-products-grid">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 2: PHÒNG THỬ ĐỒ ẢO & TƯ VẤN PHỐI ĐỒ (STUDIO VIEW)              -->
+    <!-- =================================================================== -->
+    <main class="view-section" id="view-studio">
+      
+      <div style="margin-bottom: 20px;">
+        <button class="btn btn-outline" id="back-to-catalog-btn">
+          <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách sản phẩm
+        </button>
+      </div>
+
+      <div class="studio-layout">
+        
+        <!-- COLUMN 1 (LEFT): THÔNG TIN SẢN PHẨM ĐANG CHỌN -->
+        <aside class="left-column">
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-bag-shopping gradient-text"></i> Sản Phẩm Đang Chọn
+              </h2>
+            </div>
+
+            <div class="product-img-wrap" style="height: 240px; margin-bottom: 12px; border-radius: var(--radius-md);">
+              <img id="main-prod-hero" src="" alt="Selected Product">
+            </div>
+
+            <h3 id="main-prod-name" style="font-size: 1.05rem; font-weight: 700; margin-bottom: 4px;">-</h3>
+            <div class="price-main" id="main-prod-price" style="margin-bottom: 10px;">-</div>
+
+            <div style="font-size: 0.8rem; color: var(--text-sub); background: var(--bg-sub); padding: 10px; border-radius: var(--radius-sm); margin-bottom: 14px;">
+              <div>• <strong>Chất liệu:</strong> <span id="main-prod-material">-</span></div>
+              <div>• <strong>Phong cách:</strong> <span id="main-prod-style">-</span></div>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; pointer-events: none;">
+              <i class="fa-solid fa-circle-check"></i> Đang Thử Sản Phẩm Này
+            </button>
+          </div>
+
+          <!-- User Model Picker -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size: 0.95rem;">
+                <i class="fa-solid fa-user-gear gradient-text"></i> Ảnh Cá Nhân Mặc Thử
+              </h3>
+            </div>
+
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">
+              Chọn mẫu chụp toàn thân hoặc tải ảnh của chính bạn lên:
+            </p>
+
+            <div id="model-picker-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+              <!-- Rendered via JS -->
+            </div>
+
+            <button class="btn btn-outline" style="width: 100%; font-size: 0.8rem;" onclick="document.getElementById('user-photo-input').click()">
+              <i class="fa-solid fa-upload"></i> Tải Ảnh Cá Nhân (Tùy Chọn)
+            </button>
+            <input type="file" id="user-photo-input" style="display:none;" accept="image/*">
+          </div>
+        </aside>
+
+        <!-- COLUMN 2 (CENTER): HÌNH NGƯỜI DÙNG Ở GIỮA MẶC THỬ IDM-VTON -->
+        <section class="center-column card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fa-solid fa-vr-cardboard gradient-text"></i> Mặc Thử IDM-VTON Trực Tiếp (Hình Người Dùng)
+            </h2>
+            <span class="badge-academic">Diffusion Model HD</span>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+            Hình người dùng ở giữa được mô hình IDM-VTON ghép sản phẩm đang chọn. Tích chọn gợi ý bên phải để ghép đồ phối thêm vào ngay lập tức!
+          </p>
+
+          <div class="tryon-canvas-box" id="central-canvas-box">
+            <div class="tryon-badge-overlay" id="central-view-label">
+              <span class="pulse-dot"></span> IDM-VTON Mặc Thử Real-Time
+            </div>
+
+            <div class="tryon-mode-toggle">
+              <button class="toggle-btn" id="toggle-view-original">Ảnh Gốc</button>
+              <button class="toggle-btn active" id="toggle-view-tryon">IDM-VTON Try-On</button>
+            </div>
+
+            <img id="central-canvas-img" class="tryon-canvas-img" src="" alt="IDM-VTON Try-On Result">
+
+            <div class="tryon-loading-bar-wrap" id="center-tryon-loading">
+              <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-dark);" id="tryon-status-msg">
+                Đang chạy IDM-VTON Diffusion ghép trang phục mới chọn...
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="tryon-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn btn-outline" onclick="alert('Đã tải ảnh mặc thử ảo HD thành công!')">
+              <i class="fa-solid fa-download"></i> Tải Ảnh HD
+            </button>
+            <button class="btn btn-gold" onclick="alert('Đã xuất báo cáo thẩm mỹ 6 chiều A100 dưới dạng PDF!')">
+              <i class="fa-solid fa-file-pdf"></i> Xuất Báo Cáo Phối Đồ A100
+            </button>
+          </div>
+        </section>
+
+        <!-- COLUMN 3 (RIGHT): GỢI Ý THỜI TRANG & TÍCH VÔ MẶC THỬ LUÔN! -->
+        <aside class="right-column">
+          <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fa-solid fa-wand-magic-sparkles gradient-text"></i> Gợi Ý Phối Đồ Tương Thích
+              </h2>
+              <span class="gold-text" style="font-size: 0.75rem; font-weight: 700;">Tích vô mặc thử luôn!</span>
+            </div>
+
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
+              AI Transformer gợi ý các món đồ đi kèm sản phẩm bạn chọn. Tích <strong>[✓]</strong> ô bên dưới để tự động ghép thêm vào hình mặc thử!
+            </p>
+
+            <div id="recommendations-list-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- A100 Aesthetic Score Radar -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title" style="font-size: 0.95rem;">
+                <i class="fa-solid fa-chart-pie gradient-text"></i> Điểm Thẩm Mỹ A100 (CVPR 2022)
+              </h3>
+              <div class="gold-text" style="font-weight: 800; font-size: 1.1rem;" id="right-a100-score">96.2/100</div>
+            </div>
+
+            <div style="height: 170px; position: relative; margin-bottom: 12px;">
+              <canvas id="rightA100Radar"></canvas>
+            </div>
+
+            <div class="rationale-box" id="ai-explainer-text">
+              🤖 <strong>Phân Tích Lý Do Phối Đồ AI (A100 Framework)</strong>:<br>
+              Outfit hiện tại đạt điểm <strong>96.2/100</strong> với phối màu & kiểu dáng sắc độ chuẩn HSL.
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ACADEMIC ARCHITECTURE MODAL -->
+  <div class="modal-backdrop" id="arch-modal">
+    <div class="modal-content">
+      <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 style="font-size: 1.3rem;" class="gradient-text">
+          🏛️ Sơ Đồ Kiến Trúc AI Tư Vấn Phối Đồ & Thử Đồ Ảo IDM-VTON
+        </h2>
+        <button class="close-modal-btn" id="close-arch-modal-btn">&times;</button>
+      </div>
+
+      <div style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 16px;">
+        Kiến trúc 4 tầng hợp nhất giải quyết bài toán tư vấn phối đồ cá nhân hóa kết hợp thử đồ ảo và kiểm định thẩm mỹ theo nghiên cứu CVPR 2022.
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
+          <strong style="color:var(--primary);">TẦNG 1: TƯƠNG TÁC NGƯỜI DÙNG & LLM CONTEXT</strong><br>
+          LLM Chatbot thu thập Nhu cầu, Dịp (Occasion), Sở thích cá nhân và trích xuất thành Context Tokens.
+        </div>
+        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
+          <strong style="color:var(--primary);">TẦNG 2: MÔ HÌNH GỢI Ý CÁ NHÂN HÓA (TRANSFORMER ENCODER-DECODER)</strong><br>
+          Multimodal Feature Extractor (ResNet-50 + Text) & Fashion Outfit Model (FOM / BERT Encoder).
+        </div>
+        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
+          <strong style="color:var(--accent-gold);">TẦNG 3: ĐÁNH GIÁ THẨM MỸ CHUYÊN NGÀNH (A100 FRAMEWORK - CVPR 2022)</strong><br>
+          Kiểm định AAT theo 6 chiều: Màu sắc, Phong cách, Dịp, Mùa, Chất liệu và Cân bằng.
+        </div>
+        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
+          <strong style="color:var(--primary);">TẦNG 4: TRỰC QUAN HÓA THỬ ĐỒ ẢO (IDM-VTON DIFFUSION ENGINE)</strong><br>
+          Mô hình Khuếch tán IDM-VTON kết hợp DensePose alignment ghép trang phục gợi ý lên ảnh người dùng với độ chân thực cao.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-notification" id="toast-notification">
+    <i class="fa-solid fa-circle-check" style="color: var(--secondary); font-size: 1.2rem;"></i>
+    <span id="toast-message">Đã cập nhật dữ liệu mặc thử thành công!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/idm_vton_engine.js"></script>
+  <script src="js/dataset.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
