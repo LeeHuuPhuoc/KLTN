@@ -6,11 +6,13 @@
   <title>AURA FIT AI - Cửa Hàng Thời Trang, Tư Vấn Phối Đồ Polyvore & Thử Đồ Ảo IDM-VTON</title>
   <meta name="description" content="Website thời trang tư vấn phối đồ cá nhân hóa dựa trên Polyvore Dataset, thử đồ ảo IDM-VTON, gợi ý phụ kiện và trợ lý AI Chatbot với khung đánh giá thẩm mỹ A100 (CVPR 2022).">
   
-  <!-- Fonts & Icons -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Bootstrap Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   
   <!-- Chart.js CDN for A100 Aesthetic Radar -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,7 +28,7 @@
     <header class="navbar">
       <a href="#" class="brand-logo" onclick="location.reload();">
         <div class="logo-icon">
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <i class="bi bi-stars"></i>
         </div>
         <div>
           <div class="brand-title gradient-text">AURA FIT AI</div>
@@ -36,13 +38,13 @@
 
       <div class="nav-actions">
         <button class="btn btn-outline" id="open-saved-outfits-btn">
-          <i class="fa-solid fa-bookmark"></i> Outfit Đã Lưu <span class="badge-count" id="saved-outfits-count">0</span>
+          <i class="bi bi-bookmark-fill"></i> Outfit Đã Lưu <span class="badge-count" id="saved-outfits-count">0</span>
         </button>
         <button class="btn btn-outline" id="open-feedback-btn">
-          <i class="fa-solid fa-star"></i> Đánh Giá & Phản Hồi
+          <i class="bi bi-star-fill"></i> Đánh Giá & Phản Hồi
         </button>
         <button class="btn btn-outline" id="open-arch-modal-btn">
-          <i class="fa-solid fa-diagram-project"></i> Kiến Trúc AI
+          <i class="bi bi-diagram-3-fill"></i> Kiến Trúc AI
         </button>
       </div>
     </header>
@@ -52,16 +54,17 @@
     <!-- =================================================================== -->
     <main class="view-section active" id="view-catalog">
       
-      <!-- Catalog Header Banner -->
+      <!-- Catalog Header Banner (Grounded Editorial Fashion Store Banner) -->
       <div class="catalog-header-banner">
         <div>
-          <h1 style="font-size: 1.8rem; margin-bottom: 6px;">Cửa Hàng Thời Trang & Tư Vấn Phối Đồ AI Studio</h1>
-          <p style="font-size: 0.95rem; color: var(--text-sub);">
-            Hệ thống ứng dụng mô hình <strong>Polyvore Outfit Compatibility</strong> & thử đồ ảo khuếch tán <strong>IDM-VTON (VITON-HD)</strong> mang lại trải nghiệm cá nhân hóa hoàn hảo!
+          <div class="banner-tag"><i class="bi bi-shop"></i> AURA STYLING STUDIO</div>
+          <h1 style="font-size: 1.8rem; margin-bottom: 6px;">Cửa Hàng Thời Trang & Studio Tư Vấn Phối Đồ</h1>
+          <p style="font-size: 0.95rem; color: #E2E8F0;">
+            Bộ sưu tập trang phục thực tế, tư vấn kết hợp theo từng dịp sử dụng và thử đồ trực quan IDM-VTON.
           </p>
         </div>
-        <div style="font-size: 2.5rem; color: var(--primary);">
-          <i class="fa-solid fa-shirt"></i>
+        <div class="banner-icon-wrap">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
         </div>
       </div>
 
@@ -69,14 +72,14 @@
       <section class="card advisory-widget-card" style="margin-bottom: 28px;">
         <div class="card-header">
           <h2 class="card-title">
-            <i class="fa-solid fa-sliders gradient-text"></i> Nhập Nhu Cầu & Ngữ Cảnh Để Nhận Tư Vấn Phối Đồ AI
+            <i class="bi bi-sliders gradient-text"></i> Nhập Nhu Cầu & Ngữ Cảnh Để Nhận Tư Vấn Phối Đồ AI
           </h2>
-          <span class="badge-academic"><i class="fa-solid fa-brain"></i> Polyvore Compatibility Algorithm</span>
+          <span class="badge-academic"><i class="bi bi-cpu-fill"></i> Polyvore Compatibility Algorithm</span>
         </div>
 
         <div class="context-grid">
           <div class="context-field">
-            <label class="context-label"><i class="fa-solid fa-calendar-day"></i> Dịp Sử Dụng (Occasion):</label>
+            <label class="context-label"><i class="bi bi-calendar-event"></i> Dịp Sử Dụng (Occasion):</label>
             <select id="context-occasion-select" class="form-select">
               <option value="all">-- Tất cả các dịp --</option>
               <option value="office">💼 Công Sở / Executive</option>
@@ -88,7 +91,7 @@
           </div>
 
           <div class="context-field">
-            <label class="context-label"><i class="fa-solid fa-cloud-sun"></i> Thời Tiết / Mùa:</label>
+            <label class="context-label"><i class="bi bi-sun-fill"></i> Thời Tiết / Mùa:</label>
             <select id="context-season-select" class="form-select">
               <option value="all">-- Tất cả mùa --</option>
               <option value="spring_summer">☀️ Mùa Xuân / Hè</option>
@@ -97,7 +100,7 @@
           </div>
 
           <div class="context-field">
-            <label class="context-label"><i class="fa-solid fa-palette"></i> Phong Cách (Style):</label>
+            <label class="context-label"><i class="bi bi-palette-fill"></i> Phong Cách (Style):</label>
             <select id="context-style-select" class="form-select">
               <option value="all">-- Tất cả phong cách --</option>
               <option value="smart_executive">Modern Executive</option>
@@ -109,7 +112,7 @@
 
           <div class="context-field" style="display:flex; align-items:flex-end;">
             <button class="btn btn-primary" id="apply-context-advisory-btn" style="width: 100%; height: 42px;">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> Nhận Tư Vấn Outfit Từ AI
+              <i class="bi bi-stars"></i> Nhận Tư Vấn Outfit Từ AI
             </button>
           </div>
         </div>
@@ -136,7 +139,7 @@
       <!-- CATALOG SEARCH & FILTER BAR -->
       <div class="catalog-filter-bar">
         <div class="search-input-wrap">
-          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <i class="bi bi-search search-icon"></i>
           <input type="text" id="catalog-search-input" class="search-input" placeholder="Tìm kiếm theo tên sản phẩm, chất liệu, màu sắc (ví dụ: Tweed, Lụa, Satin, Loafer)...">
         </div>
 
@@ -163,15 +166,15 @@
       
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
         <button class="btn btn-outline" id="back-to-catalog-btn">
-          <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách sản phẩm
+          <i class="bi bi-arrow-left"></i> Quay lại danh sách sản phẩm
         </button>
 
         <div style="display:flex; gap:10px;">
           <button class="btn btn-primary" id="quick-save-current-outfit-btn">
-            <i class="fa-solid fa-bookmark"></i> Lưu Outfit Này
+            <i class="bi bi-bookmark-fill"></i> Lưu Outfit Này
           </button>
           <button class="btn btn-gold" id="export-pdf-report-btn">
-            <i class="fa-solid fa-file-pdf"></i> Xuất Báo Cáo A100
+            <i class="bi bi-file-earmark-pdf-fill"></i> Xuất Báo Cáo A100
           </button>
         </div>
       </div>
@@ -184,7 +187,7 @@
           <div class="card" style="margin-bottom: 20px;">
             <div class="card-header">
               <h2 class="card-title">
-                <i class="fa-solid fa-bag-shopping gradient-text"></i> Sản Phẩm Đang Chọn
+                <i class="bi bi-bag-fill gradient-text"></i> Sản Phẩm Đang Chọn
               </h2>
             </div>
 
@@ -202,7 +205,7 @@
             </div>
 
             <button class="btn btn-primary" style="width: 100%; pointer-events: none;">
-              <i class="fa-solid fa-circle-check"></i> Đang Thử Sản Phẩm Này
+              <i class="bi bi-check-circle-fill"></i> Đang Thử Sản Phẩm Này
             </button>
           </div>
 
@@ -210,7 +213,7 @@
           <div class="card">
             <div class="card-header">
               <h3 class="card-title" style="font-size: 0.95rem;">
-                <i class="fa-solid fa-user-gear gradient-text"></i> Ảnh Mặc Thử (VITON-HD)
+                <i class="bi bi-person-gear gradient-text"></i> Ảnh Mặc Thử (VITON-HD)
               </h3>
             </div>
 
@@ -223,7 +226,7 @@
             </div>
 
             <button class="btn btn-outline" style="width: 100%; font-size: 0.8rem;" onclick="document.getElementById('user-photo-input').click()">
-              <i class="fa-solid fa-upload"></i> Tải Ảnh Cá Nhân (Tùy Chọn)
+              <i class="bi bi-upload"></i> Tải Ảnh Cá Nhân (Tùy Chọn)
             </button>
             <input type="file" id="user-photo-input" style="display:none;" accept="image/*">
           </div>
@@ -233,11 +236,11 @@
         <section class="center-column card">
           <div class="card-header">
             <h2 class="card-title">
-              <i class="fa-solid fa-vr-cardboard gradient-text"></i> Dynamic IDM-VTON Synthesis
+              <i class="bi bi-display gradient-text"></i> Dynamic IDM-VTON Synthesis
             </h2>
             <div style="display:flex; align-items:center; gap:8px;">
               <div class="badge-academic" style="background:#FEF3C7; color:#D97706; border-color:rgba(217,119,6,0.3);">
-                <i class="fa-solid fa-chart-pie"></i> Điểm A100: <strong id="center-a100-quick-score">96.2</strong>/100
+                <i class="bi bi-pie-chart-fill"></i> Điểm A100: <strong id="center-a100-quick-score">96.2</strong>/100
               </div>
               <span class="badge-academic">VITON-HD Diffusion Engine</span>
             </div>
@@ -271,10 +274,10 @@
 
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
             <button class="btn btn-outline" id="download-tryon-hd-btn">
-              <i class="fa-solid fa-download"></i> Tải Ảnh HD
+              <i class="bi bi-download"></i> Tải Ảnh HD
             </button>
             <button class="btn btn-outline" id="open-studio-feedback-btn">
-              <i class="fa-solid fa-star"></i> Đánh Giá Kết Quả Tư Vấn
+              <i class="bi bi-star-fill"></i> Đánh Giá Kết Quả Tư Vấn
             </button>
           </div>
         </section>
@@ -284,7 +287,7 @@
           <div class="card">
             <div class="card-header">
               <h2 class="card-title">
-                <i class="fa-solid fa-wand-magic-sparkles gradient-text"></i> Gợi Ý Phối Đồ & Phụ Kiện
+                <i class="bi bi-stars gradient-text"></i> Gợi Ý Phối Đồ & Phụ Kiện
               </h2>
               <span class="gold-text" style="font-size: 0.75rem; font-weight: 700;">Tích vô mặc thử luôn!</span>
             </div>
@@ -305,10 +308,10 @@
       <section class="card a100-horizontal-section" style="margin-top: 24px;">
         <div class="card-header">
           <h2 class="card-title">
-            <i class="fa-solid fa-chart-pie gradient-text"></i> Khung Đánh Giá Điểm Thẩm Mỹ A100 (CVPR 2022)
+            <i class="bi bi-pie-chart-fill gradient-text"></i> Khung Đánh Giá Điểm Thẩm Mỹ A100 (CVPR 2022)
           </h2>
           <div style="display:flex; align-items:center; gap:12px;">
-            <span class="badge-academic"><i class="fa-solid fa-award"></i> CVPR 2022 Aesthetic Framework</span>
+            <span class="badge-academic"><i class="bi bi-award-fill"></i> CVPR 2022 Aesthetic Framework</span>
             <div class="gold-text" style="font-weight: 800; font-size: 1.3rem;" id="right-a100-score">96.2/100</div>
           </div>
         </div>
@@ -335,7 +338,7 @@
   <!-- FLOATING AI CHATBOT BUTTON & INTERACTIVE DRAWER PANEL                -->
   <!-- =================================================================== -->
   <button class="chatbot-trigger-btn" id="open-chatbot-btn" title="Mở Trợ Lý AI Chatbot">
-    <i class="fa-solid fa-comments"></i>
+    <i class="bi bi-chat-dots-fill"></i>
     <span class="chatbot-badge-dot"></span>
   </button>
 
@@ -343,7 +346,7 @@
     <div class="chatbot-header">
       <div style="display:flex; align-items:center; gap:10px;">
         <div class="chatbot-avatar">
-          <i class="fa-solid fa-robot"></i>
+          <i class="bi bi-robot"></i>
         </div>
         <div>
           <div style="font-weight:700; font-size:0.95rem;">AURA AI Advisor</div>
@@ -367,7 +370,7 @@
     <form class="chatbot-input-form" id="chatbot-input-form">
       <input type="text" id="chatbot-input-text" class="chatbot-input" placeholder="Nhập câu hỏi hoặc nhu cầu tư vấn phối đồ..." autocomplete="off">
       <button type="submit" class="chatbot-send-btn">
-        <i class="fa-solid fa-paper-plane"></i>
+        <i class="bi bi-send-fill"></i>
       </button>
     </form>
   </div>
@@ -410,11 +413,11 @@
         <div>
           <label style="font-size: 0.85rem; font-weight:700; margin-bottom:6px; display:block;">Mức độ hài lòng với kết quả tư vấn:</label>
           <div class="star-rating-selector" id="star-rating-selector">
-            <i class="fa-solid fa-star star-icon active" data-star="1"></i>
-            <i class="fa-solid fa-star star-icon active" data-star="2"></i>
-            <i class="fa-solid fa-star star-icon active" data-star="3"></i>
-            <i class="fa-solid fa-star star-icon active" data-star="4"></i>
-            <i class="fa-solid fa-star star-icon active" data-star="5"></i>
+            <i class="bi bi-star-fill star-icon active" data-star="1"></i>
+            <i class="bi bi-star-fill star-icon active" data-star="2"></i>
+            <i class="bi bi-star-fill star-icon active" data-star="3"></i>
+            <i class="bi bi-star-fill star-icon active" data-star="4"></i>
+            <i class="bi bi-star-fill star-icon active" data-star="5"></i>
             <span style="font-size:0.85rem; font-weight:700; color:var(--accent-gold); margin-left:8px;" id="star-score-text">5.0 / 5.0 (Tuyệt vời)</span>
           </div>
         </div>
@@ -425,7 +428,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%;">
-          <i class="fa-solid fa-paper-plane"></i> Gửi Đánh Giá Ngay
+          <i class="bi bi-send-fill"></i> Gửi Đánh Giá Ngay
         </button>
       </form>
 
@@ -477,7 +480,7 @@
 
   <!-- TOAST NOTIFICATION -->
   <div class="toast-notification" id="toast-notification">
-    <i class="fa-solid fa-circle-check" style="color: var(--secondary); font-size: 1.2rem;"></i>
+    <i class="bi bi-check-circle-fill" style="color: var(--secondary); font-size: 1.2rem;"></i>
     <span id="toast-message">Đã cập nhật dữ liệu mặc thử thành công!</span>
   </div>
 
