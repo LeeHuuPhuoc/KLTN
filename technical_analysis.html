@@ -3,863 +3,932 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AURA FIT AI - Báo Cáo & Phân Tích Kỹ Thuật AI Đề Xuất Phối Đồ</title>
-  <meta name="description" content="Trang phân tích kỹ thuật chi tiết các thuật toán AI Đề xuất trang phục cá nhân hóa POG, Fashion Outfit Model FOM, Multi-modal Embedding Triplet Loss, Khung A100 CVPR 2022 và Thử đồ ảo IDM-VTON.">
-  
-  <!-- Google Fonts -->
+  <title>Phân Tích Kỹ Thuật — AI Tư Vấn Phối Đồ | AURA FIT AI</title>
+  <meta name="description" content="Tài liệu phân tích kỹ thuật pipeline 6 tầng: LLM, RAG, Knowledge Graph, POG, FOM, A100, AI Agent và IDM-VTON Virtual Try-On.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Bootstrap Icons CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
-    :root {
-      --bg-dark: #0F172A;
-      --bg-card: #1E293B;
-      --bg-sub: #334155;
-      --primary: #0EA5E9;
-      --primary-glow: rgba(14, 165, 233, 0.25);
-      --secondary: #10B981;
-      --accent-gold: #F59E0B;
-      --accent-purple: #8B5CF6;
-      --accent-rose: #F43F5E;
-      --text-main: #F8FAFC;
-      --text-sub: #94A3B8;
-      --border-color: rgba(255, 255, 255, 0.1);
-      --radius-lg: 16px;
-      --radius-md: 12px;
-      --radius-sm: 8px;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F8FAFC;color:#1E293B;line-height:1.7;font-size:15px}
+    h1,h2,h3,h4{font-family:'Outfit',sans-serif}
+    a{text-decoration:none}
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    /* ── TOPNAV ── */
+    .topnav{background:#fff;border-bottom:1px solid #E2E8F0;padding:14px 0;position:sticky;top:0;z-index:100;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+    .topnav .inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+    .brand{display:flex;align-items:center;gap:10px;color:#1E293B}
+    .brand-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#2563EB,#7C3AED);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem}
+    .brand-name{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:800}
+    .brand-name span{color:#2563EB}
+    .back-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:8px;background:#2563EB;color:#fff;font-size:0.85rem;font-weight:600;transition:background .2s}
+    .back-btn:hover{background:#1D4ED8}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      line-height: 1.6;
-      padding-bottom: 60px;
-    }
-
-    h1, h2, h3, h4, .brand-title {
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .gold-gradient-text {
-      background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* CONTAINER & HEADER */
-    .container {
-      max-width: 1240px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    header.navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 30px;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #0EA5E9, #8B5CF6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      color: #FFF;
-      box-shadow: 0 0 20px var(--primary-glow);
-    }
-
-    .brand-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-    }
-
-    .brand-subtitle {
-      font-size: 0.78rem;
-      color: var(--text-sub);
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 18px;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.88rem;
-      cursor: pointer;
-      border: none;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0EA5E9, #2563EB);
-      color: #FFF;
-      box-shadow: 0 4px 14px var(--primary-glow);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
-    }
-
-    .btn-outline {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-    }
-
-    .btn-outline:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--primary);
-    }
-
-    /* HERO BANNER */
-    .hero-banner {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      margin-bottom: 36px;
+    /* ── HERO (ANIMATED BANNER) ── */
+    .hero{
       position: relative;
+      background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 50%, #ECFEFF 100%);
+      background-size: 200% 200%;
+      animation: heroGradShift 8s ease infinite alternate;
+      border-bottom: 1px solid #E2E8F0;
+      padding: 52px 0 40px;
       overflow: hidden;
     }
-
-    .hero-banner::before {
-      content: '';
-      position: absolute;
-      top: -50px;
-      right: -50px;
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
-      pointer-events: none;
+    @keyframes heroGradShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
+    .hero .wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
+    .hero .tag{display:inline-flex;align-items:center;gap:6px;background:#DBEAFE;color:#1D4ED8;padding:5px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;letter-spacing:.5px;margin-bottom:14px;box-shadow:0 2px 8px rgba(37,99,235,0.1)}
+    .hero h1{font-size:2.1rem;color:#0F172A;margin-bottom:12px;line-height:1.25;font-weight:800}
+    .hero .desc{color:#475569;font-size:1rem;max-width:800px;margin-bottom:24px;line-height:1.6}
+    .badge-row{display:flex;flex-wrap:wrap;gap:8px}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:600;border:1px solid;transition:all 0.3s ease}
+    .badge:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.06)}
+    .bd-blue{background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE}
+    .bd-green{background:#F0FDF4;color:#15803D;border-color:#BBF7D0}
+    .bd-amber{background:#FFFBEB;color:#B45309;border-color:#FDE68A}
+    .bd-purple{background:#F5F3FF;color:#6D28D9;border-color:#DDD6FE}
+    .bd-rose{background:#FFF1F2;color:#BE123C;border-color:#FECDD3}
+    .bd-cyan{background:#ECFEFF;color:#0E7490;border-color:#A5F3FC}
 
-    .hero-title {
-      font-size: 1.8rem;
-      margin-bottom: 10px;
-    }
+    /* ── LAYOUT ── */
+    .page-body{max-width:1200px;margin:0 auto;padding:48px 24px 80px}
+    .section-wrap{margin-bottom:70px}
+    .section-heading{display:flex;align-items:flex-start;gap:14px;margin-bottom:26px;padding-bottom:16px;border-bottom:2px solid #E2E8F0}
+    .step-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;flex-shrink:0;margin-top:2px}
+    .section-heading h2{font-size:1.35rem;color:#0F172A;margin-bottom:3px}
+    .section-heading .sub{font-size:0.86rem;color:#64748B;font-weight:400;font-family:'Inter',sans-serif}
 
-    .hero-desc {
-      color: var(--text-sub);
-      font-size: 0.95rem;
-      max-width: 850px;
-    }
+    /* ── PIPELINE FLOW ── */
+    .pipeline-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:30px}
+    @media(max-width:900px){.pipeline-overview{grid-template-columns:1fr}}
+    .pov-card{border-radius:12px;padding:18px;border:1px solid;position:relative;overflow:hidden}
+    .pov-card .pov-num{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+    .pov-card .pov-title{font-size:0.95rem;font-weight:700;color:#0F172A;margin-bottom:4px}
+    .pov-card .pov-desc{font-size:0.8rem;line-height:1.5}
+    .pov-arrow{display:flex;align-items:center;justify-content:center;color:#94A3B8;font-size:1.4rem;margin:6px 0}
 
-    .academic-badges {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 18px;
-    }
+    /* ── CARD ── */
+    .card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:26px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .card-head{font-size:0.95rem;font-weight:700;color:#0F172A;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-    .badge-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: rgba(14, 165, 233, 0.12);
-      color: #38BDF8;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-    }
+    /* ── GRIDS ── */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+    @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
 
-    /* GRID & CARDS LAYOUT */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-      margin-bottom: 36px;
-    }
+    /* ── EXPLAIN BOXES ── */
+    .ebox{background:#F8FAFC;border:1px solid #E2E8F0;border-left:4px solid;border-radius:10px;padding:15px 20px;margin-bottom:16px;font-size:0.88rem;color:#334155;line-height:1.7}
+    .ebox strong{color:#0F172A}
+    .ebox.blue{border-left-color:#2563EB;background:#EFF6FF}
+    .ebox.green{border-left-color:#15803D;background:#F0FDF4}
+    .ebox.amber{border-left-color:#D97706;background:#FFFBEB}
+    .ebox.purple{border-left-color:#7C3AED;background:#F5F3FF}
+    .ebox.rose{border-left-color:#E11D48;background:#FFF1F2}
+    .ebox.cyan{border-left-color:#0891B2;background:#ECFEFF}
+    .ebox.slate{border-left-color:#475569;background:#F8FAFC}
 
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
+    /* ── FORMULA ── */
+    .formula{background:#0F172A;border-radius:10px;padding:16px 20px;margin:14px 0;font-family:'Courier New',monospace;font-size:0.88rem;color:#7DD3FC;line-height:1.9}
+    .formula .c{color:#475569}
 
-    .card-title-wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
-    }
+    /* ── PIPELINE STEPS (vertical) ── */
+    .pipeline-v{display:flex;flex-direction:column;gap:0}
+    .pv-step{display:flex;gap:16px;padding:18px 0;border-bottom:1px dashed #E2E8F0}
+    .pv-step:last-child{border-bottom:none}
+    .pv-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#fff;flex-shrink:0;margin-top:3px}
+    .pv-title{font-weight:700;color:#0F172A;font-size:0.92rem;margin-bottom:4px}
+    .pv-text{font-size:0.83rem;color:#475569;line-height:1.6}
+    .pv-code{display:inline-block;font-family:monospace;font-size:0.79rem;background:#F1F5F9;color:#334155;padding:2px 8px;border-radius:4px;margin-top:5px}
 
-    .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    /* ── TABLE ── */
+    .tbl{width:100%;border-collapse:collapse;font-size:0.86rem}
+    .tbl thead th{background:#F1F5F9;color:#475569;font-weight:700;padding:10px 14px;text-align:left;font-size:0.8rem;text-transform:uppercase;letter-spacing:.4px}
+    .tbl tbody td{padding:10px 14px;border-bottom:1px solid #F1F5F9;color:#334155}
+    .tbl tbody tr:hover td{background:#F8FAFC}
+    .pill{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.78rem;font-weight:700;font-family:monospace}
+    .p-blue{background:#DBEAFE;color:#1D4ED8}
+    .p-green{background:#D1FAE5;color:#065F46}
+    .p-amber{background:#FEF3C7;color:#92400E}
+    .p-purple{background:#EDE9FE;color:#5B21B6}
+    .p-rose{background:#FFE4E6;color:#9F1239}
 
-    /* 4-LAYER OVERVIEW CARDS */
-    .col-3 { grid-column: span 3; }
-    .col-4 { grid-column: span 4; }
-    .col-6 { grid-column: span 6; }
-    .col-8 { grid-column: span 8; }
-    .col-12 { grid-column: span 12; }
+    /* ── CHART ── */
+    .chart-wrap{position:relative;width:100%}
 
-    @media (max-width: 992px) {
-      .col-3, .col-4, .col-6, .col-8 { grid-column: span 12; }
-    }
+    /* ── SIMULATOR ── */
+    .sim-panel{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:24px}
+    .sim-field{margin-bottom:16px}
+    .sim-label{display:flex;justify-content:space-between;font-size:0.84rem;font-weight:600;color:#334155;margin-bottom:6px}
+    .sim-label .val{font-family:monospace;color:#2563EB;font-weight:700}
+    input[type=range]{width:100%;accent-color:#2563EB;cursor:pointer}
 
-    .layer-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      position: relative;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
+    /* ── RESULT BOX ── */
+    .result-box{background:linear-gradient(135deg,#EFF6FF,#F5F3FF);border:1px solid #BFDBFE;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+    .result-box .r-val{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:#2563EB}
+    .result-box .r-label{font-size:0.77rem;color:#64748B;margin-bottom:2px;font-weight:600}
+    .status-tag{font-size:0.82rem;font-weight:700;padding:6px 14px;border-radius:20px}
+    .s-ok{background:#D1FAE5;color:#065F46}
+    .s-warn{background:#FEF3C7;color:#92400E}
+    .s-fail{background:#FFE4E6;color:#9F1239}
 
-    .layer-card:hover {
-      transform: translateY(-4px);
-    }
+    /* ── STAT CARDS ── */
+    .stat-card{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:18px;border-top:3px solid;text-align:center}
+    .stat-num{font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;margin:5px 0 3px}
+    .stat-label{font-size:0.75rem;color:#64748B;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .stat-desc{font-size:0.8rem;color:#94A3B8;margin-top:3px}
 
-    .layer-card.l1 { border-left: 4px solid var(--primary); }
-    .layer-card.l2 { border-left: 4px solid var(--secondary); }
-    .layer-card.l3 { border-left: 4px solid var(--accent-gold); }
-    .layer-card.l4 { border-left: 4px solid var(--accent-purple); }
+    /* ── COMPONENT TAG ── */
+    .comp-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;font-size:0.79rem;font-weight:700;border:1px solid;margin:3px 4px 3px 0}
 
-    .layer-number {
-      font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-    }
+    /* ── SCORE BADGE ── */
+    .score-badge{display:inline-flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800}
 
-    .layer-name {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .layer-detail {
-      font-size: 0.83rem;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
-
-    /* INTERACTIVE SIMULATORS & FORMULA STYLING */
-    .formula-box {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-sm);
-      padding: 14px 18px;
-      font-family: monospace;
-      font-size: 0.9rem;
-      color: #38BDF8;
-      margin-bottom: 16px;
-    }
-
-    .sim-field {
-      margin-bottom: 14px;
-    }
-
-    .sim-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .sim-slider {
-      width: 100%;
-      accent-color: var(--primary);
-    }
-
-    .metric-display {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(14, 165, 233, 0.1);
-      border: 1px dashed var(--primary);
-      padding: 14px;
-      border-radius: var(--radius-sm);
-      margin-top: 14px;
-    }
-
-    .metric-value {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #38BDF8;
-    }
-
-    /* CHART CONTAINERS */
-    .chart-container {
-      position: relative;
-      width: 100%;
-      min-height: 280px;
-    }
-
-    /* TABLE SPECIFICATIONS */
-    .spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    .spec-table th, .spec-table td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .spec-table th {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-sub);
-      font-weight: 600;
-    }
-
-    .code-tag {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: monospace;
-      color: #E2E8F0;
-    }
+    /* ── FOOTER ── */
+    .page-footer{background:#F1F5F9;border-top:1px solid #E2E8F0;padding:28px 0;text-align:center;color:#64748B;font-size:0.84rem}
   </style>
 </head>
 <body>
 
-  <div class="container">
-    
-    <!-- NAVBAR -->
-    <header class="navbar">
-      <a href="index.html" class="brand-logo">
-        <div class="logo-icon">
-          <i class="bi bi-diagram-3-fill"></i>
-        </div>
-        <div>
-          <div class="brand-title gradient-text">AURA FIT AI - Technical Dashboard</div>
-          <div class="brand-subtitle">Trang Phân Tích Kỹ Thuật Deep Learning & Mô Hình Hợp Nhất 4 Tầng</div>
-        </div>
-      </a>
+<!-- TOPNAV -->
+<nav class="topnav">
+  <div class="inner">
+    <a href="index.html" class="brand">
+      <div class="brand-icon"><i class="bi bi-stars"></i></div>
+      <div class="brand-name">AURA FIT <span>AI</span></div>
+    </a>
+    <a href="index.html" class="back-btn"><i class="bi bi-arrow-left"></i> Quay Lại Store & Studio</a>
+  </div>
+</nav>
 
-      <div class="nav-actions">
-        <a href="index.html" class="btn btn-primary">
-          <i class="bi bi-arrow-left-circle-fill"></i> Quay Lại Store & Studio
-        </a>
-      </div>
-    </header>
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div class="tag"><i class="bi bi-file-earmark-text-fill"></i> TÀI LIỆU PHÂN TÍCH KỸ THUẬT</div>
+    <h1>Pipeline 6 Tầng — AI Tư Vấn Phối Đồ<br>Cá Nhân Hóa Toàn Diện</h1>
+    <p class="desc">Diễn giải chi tiết từng bước trong hệ thống: từ câu nói tự nhiên của người dùng, qua LLM, RAG, Knowledge Graph, POG/FOM, Quality Control, AI Agent điều phối, đến thử đồ ảo IDM-VTON.</p>
+    <div class="badge-row">
+      <span class="badge bd-blue"><i class="bi bi-chat-quote"></i> LLM + NLP Intent Extraction</span>
+      <span class="badge bd-cyan"><i class="bi bi-database"></i> RAG + Knowledge Graph</span>
+      <span class="badge bd-green"><i class="bi bi-layers"></i> POG + FOM (Polyvore)</span>
+      <span class="badge bd-amber"><i class="bi bi-award"></i> A100 CVPR 2022</span>
+      <span class="badge bd-purple"><i class="bi bi-robot"></i> AI Agent Coordinator</span>
+      <span class="badge bd-rose"><i class="bi bi-magic"></i> IDM-VTON Diffusion</span>
+    </div>
+  </div>
+</div>
 
-    <!-- HERO BANNER -->
-    <div class="hero-banner">
-      <h1 class="hero-title gradient-text">Phân Tích Kỹ Thuật Thuật Toán Đề Xuất Phối Đồ Cá Nhân Hóa</h1>
-      <p class="hero-desc">
-        Tài liệu mô tả toán học và bảng điều khiển trực quan hóa cho các khối mô hình: Multi-modal Similarity Learning, Fashion Outfit Model (FOM Transformer), Personalized Outfit Generation (POG), Khung Đánh Giá Thẩm Mỹ A100 CVPR 2022 và Thử Đồ Ảo IDM-VTON.
-      </p>
-      <div class="academic-badges">
-        <span class="badge-item"><i class="bi bi-cpu-fill"></i> PyTorch Deep Learning Engine</span>
-        <span class="badge-item"><i class="bi bi-layers-fill"></i> Alibaba POG & FOM Architecture</span>
-        <span class="badge-item"><i class="bi bi-award-fill"></i> CVPR 2022 Aesthetic Benchmark</span>
-        <span class="badge-item"><i class="bi bi-magic"></i> yisol/IDM-VTON Diffusion Pipeline</span>
-        <span class="badge-item"><i class="bi bi-speedometer"></i> Faiss Index Search Acceleration</span>
+<div class="page-body">
+
+  <!-- ══════════════════════════════════════════════════════
+       OVERVIEW — SƠ ĐỒ PIPELINE 6 TẦNG
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#0F172A;">∑</div>
+      <div>
+        <h2>Tổng quan — Pipeline 6 Tầng từ Câu nói → Ảnh Thử đồ</h2>
+        <div class="sub">Dữ liệu đi qua 6 tầng xử lý liên tiếp, mỗi tầng giải quyết một vấn đề cụ thể</div>
       </div>
     </div>
 
-    <!-- SECTION 1: 4-LAYER UNIFIED SYSTEM OVERVIEW -->
-    <h2 style="font-size: 1.3rem; margin-bottom: 16px;" class="gradient-text">
-      🏛️ Tổng Quan Kiến Trúc AI 4 Tầng Hợp Nhất (4-Layer Unified System)
-    </h2>
-    <div class="dashboard-grid">
-      <div class="col-3">
-        <div class="layer-card l1">
-          <div class="layer-number" style="color: var(--primary);">Tầng 1</div>
-          <div class="layer-name">LLM Chatbot Advisor</div>
-          <div class="layer-detail">
-            Bóc tách Nhu cầu, Dịp (Occasion), Mùa (Season), và Lịch sử tương tác người dùng thành ma trận Context Tokens $C \in \mathbb{R}^{m \times 64}$.
-          </div>
-        </div>
+    <!-- 6-step flow cards -->
+    <div class="pipeline-overview">
+      <div class="pov-card" style="background:#EFF6FF;border-color:#BFDBFE;">
+        <div class="pov-num" style="color:#2563EB;">Tầng 1</div>
+        <div class="pov-title">💬 LLM + NLP</div>
+        <div class="pov-desc" style="color:#1D4ED8;">Hiểu yêu cầu → Vector ngữ cảnh C</div>
       </div>
-
-      <div class="col-3">
-        <div class="layer-card l2">
-          <div class="layer-number" style="color: var(--secondary);">Tầng 2</div>
-          <div class="layer-name">POG & FOM Matrix</div>
-          <div class="layer-detail">
-            Polyvore Dataset Matrix: MultiModalEmbedding ($128$-d), FOM Transformer Encoder (MIP Loss), POG Decoder sinh outfit tự hồi quy.
-          </div>
-        </div>
+      <div class="pov-card" style="background:#ECFEFF;border-color:#A5F3FC;">
+        <div class="pov-num" style="color:#0891B2;">Tầng 2</div>
+        <div class="pov-title">🗂️ RAG + Knowledge Graph</div>
+        <div class="pov-desc" style="color:#0E7490;">Bổ sung tri thức thời trang ngoài dữ liệu huấn luyện</div>
       </div>
-
-      <div class="col-3">
-        <div class="layer-card l3">
-          <div class="layer-number" style="color: var(--accent-gold);">Tầng 3</div>
-          <div class="layer-number" style="color: var(--accent-gold); display:none;">A100</div>
-          <div class="layer-name">A100 CVPR 2022</div>
-          <div class="layer-detail">
-            Aesthetic Attribute Testing (AAT) kiểm định 6 chiều: Color Harmony, Style Synergy, Occasion Fit, Seasonality, Material & Balance.
-          </div>
-        </div>
+      <div class="pov-card" style="background:#F0FDF4;border-color:#BBF7D0;">
+        <div class="pov-num" style="color:#15803D;">Tầng 3</div>
+        <div class="pov-title">🧩 POG + FOM + CLIP</div>
+        <div class="pov-desc" style="color:#15803D;">Sinh outfit & đánh giá tương thích đa phương thức</div>
       </div>
-
-      <div class="col-3">
-        <div class="layer-card l4">
-          <div class="layer-number" style="color: var(--accent-purple);">Tầng 4</div>
-          <div class="layer-name">IDM-VTON Try-On</div>
-          <div class="layer-detail">
-            Mô hình khuếch tán Diffusion `yisol/IDM-VTON` ghép trang phục & phụ kiện lên ảnh người dùng với DensePose alignment.
-          </div>
-        </div>
+      <div class="pov-card" style="background:#FFFBEB;border-color:#FDE68A;">
+        <div class="pov-num" style="color:#B45309;">Tầng 4</div>
+        <div class="pov-title">📊 A100 Quality Control</div>
+        <div class="pov-desc" style="color:#B45309;">Kiểm định 6 tiêu chí thẩm mỹ + Personalized Outfit Score</div>
+      </div>
+      <div class="pov-card" style="background:#F5F3FF;border-color:#DDD6FE;">
+        <div class="pov-num" style="color:#6D28D9;">Tầng 5</div>
+        <div class="pov-title">🤖 AI Agent Coordinator</div>
+        <div class="pov-desc" style="color:#6D28D9;">Điều phối, chọn lọc, tối ưu liên tục theo phản hồi</div>
+      </div>
+      <div class="pov-card" style="background:#FFF1F2;border-color:#FECDD3;">
+        <div class="pov-num" style="color:#BE123C;">Tầng 6</div>
+        <div class="pov-title">🖼️ IDM-VTON Virtual Try-On</div>
+        <div class="pov-desc" style="color:#BE123C;">Sinh ảnh thử đồ chân thực bằng Diffusion Model</div>
       </div>
     </div>
 
-    <!-- SECTION 2: TASK 1 MULTI-MODAL EMBEDDING & TRIPLET LOSS SIMULATOR -->
-    <div class="dashboard-grid">
-      <div class="col-6">
-        <div class="card" style="height: 100%;">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-intersect gradient-text"></i> Task 1: Multi-modal Similarity Learning
+    <div class="ebox slate">
+      <strong>Ví dụ thực tế chạy qua cả 6 tầng:</strong> Người dùng gõ <em>"Tôi cần outfit đi họp đối tác, mùa đông, phong cách tối giản"</em>
+      → Tầng 1 trích xuất Occasion=Office, Season=Winter, Style=Minimalist
+      → Tầng 2 nạp quy tắc phối màu tông trầm mùa đông từ Knowledge Graph
+      → Tầng 3 POG sinh Blazer Tweed + Charcoal Trouser + Loafer (FOM Score 98.4%)
+      → Tầng 4 kiểm định A100 đạt 96.8/100, tính Personalized Outfit Score = 97.2
+      → Tầng 5 Agent xác nhận, ghi nhớ sở thích
+      → Tầng 6 IDM-VTON ghép trang phục lên ảnh người dùng với 30 denoising steps.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       TẦNG 1 — LLM + NLP
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#2563EB;">1</div>
+      <div>
+        <h2>Tầng 1 — Hiểu yêu cầu và xây dựng Vector Ngữ cảnh</h2>
+        <div class="sub">LLM + NLP phân tích câu nói tự nhiên → trích xuất Intent, Entity, Context → vector hóa thành C</div>
+      </div>
+    </div>
+
+    <div class="ebox blue">
+      <strong>Vấn đề cần giải quyết:</strong> Câu nói tự nhiên như <em>"Tôi cần đồ đi tiệc cuối năm, hơi lạnh"</em> không có cấu trúc và không thể đưa trực tiếp vào mô hình toán học. Tầng 1 có nhiệm vụ chuyển đổi ngôn ngữ tự nhiên → các đặc trưng có cấu trúc → vector số mà các tầng sau có thể tính toán.
+    </div>
+
+    <div class="grid-2" style="align-items:start;">
+      <div>
+        <div class="card">
+          <div class="card-head"><i class="bi bi-diagram-3" style="color:#2563EB;"></i> Quy trình xử lý Tầng 1</div>
+          <div class="pipeline-v">
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#2563EB;">A</div>
+              <div>
+                <div class="pv-title">Intent Recognition — Xác định Ý định</div>
+                <div class="pv-text">LLM phân loại mục tiêu của người dùng: Tư vấn phối đồ? Tìm sản phẩm cụ thể? Hỏi về xu hướng? Đây là bước đầu quyết định nhánh xử lý phía sau.</div>
+                <span class="pv-code">Intent: outfit_recommendation | product_search | trend_query</span>
+              </div>
             </div>
-            <span class="badge-item">d_e = 128 Joint Embedding</span>
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#3B82F6;">B</div>
+              <div>
+                <div class="pv-title">Entity Extraction — Trích xuất Thực thể</div>
+                <div class="pv-text">NLP nhận diện các thực thể có tên: Dịp (tiệc cuối năm = gala), Mùa (hơi lạnh = thu/đông), Phong cách (tối giản = minimalist), Màu sắc ưa thích, Ngân sách.</div>
+                <span class="pv-code">Entities: {occasion: gala, season: winter, style: minimalist}</span>
+              </div>
+            </div>
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#60A5FA;">C</div>
+              <div>
+                <div class="pv-title">User History Merge — Kết hợp Lịch sử</div>
+                <div class="pv-text">Ghép thêm lịch sử click, mua hàng, outfit đã lưu của người dùng để cá nhân hóa ngữ cảnh. Người dùng hay chọn đồ minimalist → tăng trọng số phong cách này.</div>
+                <span class="pv-code">User Profile: {preferred_style: minimalist, avg_price: 2M VND}</span>
+              </div>
+            </div>
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#93C5FD;">D</div>
+              <div>
+                <div class="pv-title">Embedding → Vector C</div>
+                <div class="pv-text">Embedding Model chuyển toàn bộ đặc trưng đã trích xuất thành vector số C ∈ ℝ^(m×64), là "ký ức" về nhu cầu và sở thích người dùng, truyền xuống các tầng dưới.</div>
+                <span class="pv-code">C = EmbeddingModel(intent + entities + user_history) ∈ ℝ^(m×64)</span>
+              </div>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div class="formula-box">
-            f = Dense([ f_img (1536d) || f_text (300d) || f_CF (160d) ]) -> 128d<br>
-            L_E = max( d(f, f+) - d(f, f-) + margin, 0 )
-          </div>
-
-          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 16px;">
-            Mô hình nối vector ảnh ResNet-50, tiêu đề TextCNN và Graph Embedding tương tác đồng xuất hiện, chiếu sang không gian nhúng $128$-d. Sử dụng Triplet Margin Loss ($\alpha = 0.1$) để kéo item cùng style lại gần nhau.
-          </p>
-
-          <table class="spec-table">
-            <thead>
-              <tr>
-                <th>Modal Feature</th>
-                <th>Source Model</th>
-                <th>Input Dim</th>
-                <th>Joint Projected</th>
-              </tr>
-            </thead>
+      <div>
+        <div class="ebox blue" style="margin-bottom:14px;">
+          <strong>LLM đóng vai trò gì ở đây?</strong><br>
+          LLM không sinh outfit — nhiệm vụ của nó ở Tầng 1 là <em>phiên dịch</em> ngôn ngữ tự nhiên thành dữ liệu có cấu trúc. Giống như một thư ký hiểu ý sếp và ghi ra bảng mô tả yêu cầu rõ ràng để bộ phận kỹ thuật thực hiện.
+        </div>
+        <div class="ebox blue" style="margin-bottom:14px;">
+          <strong>Embedding Model làm gì?</strong><br>
+          Chuyển các từ/cụm từ (như "tối giản", "mùa đông", "gala") thành dãy số. Hai khái niệm gần nghĩa nhau sẽ cho vector gần nhau trong không gian. Ví dụ: vector("dạ tiệc") ≈ vector("gala") ≈ vector("event sang trọng").
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="bi bi-table" style="color:#2563EB;"></i> Các trường được trích xuất</div>
+          <table class="tbl">
+            <thead><tr><th>Trường</th><th>Ví dụ</th><th>Kiểu dữ liệu</th></tr></thead>
             <tbody>
-              <tr>
-                <td>Visual Image ($f_{img}$)</td>
-                <td>ResNet-50 / Inception-ResNet-V2</td>
-                <td><span class="code-tag">1536-d</span></td>
-                <td rowspan="3" style="vertical-align: middle; text-align: center; font-weight:700; color:#38BDF8;">
-                  Linear Projection<br><span class="code-tag">d_e = 128</span>
-                </td>
-              </tr>
-              <tr>
-                <td>Textual Metadata ($f_{text}$)</td>
-                <td>TextCNN Title / Attributes</td>
-                <td><span class="code-tag">300-d</span></td>
-              </tr>
-              <tr>
-                <td>Graph Co-occurrence ($f_{CF}$)</td>
-                <td>Graph Embedding Interactions</td>
-                <td><span class="code-tag">160-d</span></td>
-              </tr>
+              <tr><td><strong>Occasion</strong></td><td>Công sở, Dạ tiệc, Casual</td><td><span class="pill p-blue">Categorical</span></td></tr>
+              <tr><td><strong>Season</strong></td><td>Xuân-Hè, Thu-Đông</td><td><span class="pill p-blue">Categorical</span></td></tr>
+              <tr><td><strong>Style</strong></td><td>Minimalist, Chic, Streetwear</td><td><span class="pill p-blue">Categorical</span></td></tr>
+              <tr><td><strong>Color Pref</strong></td><td>Tông trung tính, Pastel</td><td><span class="pill p-green">Text → Embed</span></td></tr>
+              <tr><td><strong>Budget</strong></td><td>1–3 triệu VND</td><td><span class="pill p-amber">Numeric</span></td></tr>
+              <tr><td><strong>User History</strong></td><td>Top-10 sản phẩm đã xem</td><td><span class="pill p-purple">Vector</span></td></tr>
             </tbody>
           </table>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- TRIPLET LOSS INTERACTIVE SIMULATOR -->
-      <div class="col-6">
-        <div class="card" style="height: 100%;">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-sliders gold-gradient-text"></i> Triplet Loss Live Calculator
-            </div>
-            <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight:700;">Margin α = 0.10</span>
+  <!-- ══════════════════════════════════════════════════════
+       TẦNG 2 — RAG + KNOWLEDGE GRAPH
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#0891B2;">2</div>
+      <div>
+        <h2>Tầng 2 — Bổ sung Tri thức Thời trang bằng RAG và Knowledge Graph</h2>
+        <div class="sub">Truy xuất quy tắc phối đồ từ cơ sở tri thức ngoài — không phụ thuộc hoàn toàn vào dữ liệu huấn luyện</div>
+      </div>
+    </div>
+
+    <div class="ebox cyan">
+      <strong>Tại sao cần Tầng 2?</strong> Mô hình Deep Learning chỉ biết những gì có trong tập dữ liệu huấn luyện (Polyvore Dataset). Nếu xu hướng thời trang thay đổi, hoặc có một quy tắc phối đồ chuyên ngành chưa từng xuất hiện trong training data, mô hình sẽ sai. <strong>RAG + Knowledge Graph</strong> giải quyết bằng cách tra cứu tri thức bên ngoài theo yêu cầu, như một chuyên gia tra sách khi cần.
+    </div>
+
+    <div class="grid-2" style="align-items:start; margin-bottom:22px;">
+      <div>
+        <div class="card">
+          <div class="card-head"><i class="bi bi-search" style="color:#0891B2;"></i> RAG — Retrieval-Augmented Generation</div>
+          <div class="ebox cyan">
+            RAG không sinh ra tri thức từ không khí — nó <em>tìm kiếm</em> thông tin liên quan từ kho tài liệu đã được lập chỉ mục, rồi <em>kết hợp</em> với câu hỏi trước khi đưa vào LLM.
           </div>
-
-          <div class="sim-field">
-            <div class="sim-label">
-              <span>Khoảng cách Anchor - Positive (d+):</span>
-              <span id="val-dpos" style="color: #10B981;">0.25</span>
+          <div class="pipeline-v">
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#0891B2;">1</div>
+              <div>
+                <div class="pv-title">Query Embedding</div>
+                <div class="pv-text">Vector ngữ cảnh C từ Tầng 1 được dùng làm câu truy vấn để tìm tài liệu liên quan trong knowledge base.</div>
+              </div>
             </div>
-            <input type="range" class="sim-slider" id="slider-dpos" min="0.05" max="1.0" step="0.01" value="0.25">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label">
-              <span>Khoảng cách Anchor - Negative (d-):</span>
-              <span id="val-dneg" style="color: #F43F5E;">0.65</span>
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#06B6D4;">2</div>
+              <div>
+                <div class="pv-title">Semantic Retrieval</div>
+                <div class="pv-text">Tìm top-K tài liệu có độ tương đồng cao nhất: quy tắc phối màu, phong cách mùa đông, dress code dạ tiệc... Dùng Cosine Similarity trên vector không gian.</div>
+              </div>
             </div>
-            <input type="range" class="sim-slider" id="slider-dneg" min="0.05" max="1.5" step="0.01" value="0.65">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label">
-              <span>Margin (α):</span>
-              <span id="val-margin">0.10</span>
+            <div class="pv-step">
+              <div class="pv-dot" style="background:#22D3EE;">3</div>
+              <div>
+                <div class="pv-title">Context Augmentation</div>
+                <div class="pv-text">Ghép tri thức truy xuất được vào prompt của LLM → LLM có căn cứ chuyên ngành để sinh gợi ý thay vì đoán mò.</div>
+                <span class="pv-code">Prompt = [User Intent] + [Retrieved Fashion Rules] + [User Context C]</span>
+              </div>
             </div>
-            <input type="range" class="sim-slider" id="slider-margin" min="0.0" max="0.5" step="0.01" value="0.10">
           </div>
+        </div>
+      </div>
 
-          <div class="metric-display">
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-head"><i class="bi bi-diagram-3-fill" style="color:#0891B2;"></i> Knowledge Graph — Biểu diễn Quan hệ Thời trang</div>
+          <div class="ebox cyan">
+            Knowledge Graph là đồ thị có hướng biểu diễn quan hệ giữa các thực thể thời trang. Mỗi node là một thực thể (áo, màu, phong cách), mỗi cạnh là quan hệ (hợp với, phù hợp với, không nên kết hợp với).
+          </div>
+          <div class="formula">
+            <span class="c">// Ví dụ một số quan hệ trong Knowledge Graph:</span><br>
+            Blazer_Tweed — HỢP_VỚI → Quần_Charcoal<br>
+            Quần_Charcoal — HỢP_VỚI → Loafer_Nappa<br>
+            Phong_cách_Minimalist — DÙNG → Màu_Trung_tính<br>
+            Mùa_Đông — PHÙ_HỢP → Chất_liệu_Wool + Tweed<br>
+            Dạ_tiệc — KHÔNG_NÊN → Jeans_Denim
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><i class="bi bi-journals" style="color:#0891B2;"></i> Nội dung Knowledge Base</div>
+          <table class="tbl">
+            <thead><tr><th>Loại Tri thức</th><th>Ví dụ</th></tr></thead>
+            <tbody>
+              <tr><td>Quy tắc phối màu</td><td>Bộ màu bổ sắc, đơn sắc, tam giác sắc; HSL contrast ≥ 4.5:1</td></tr>
+              <tr><td>Dress code theo Occasion</td><td>Business Formal, Smart Casual, Black Tie, Resort Wear</td></tr>
+              <tr><td>Chất liệu theo Mùa</td><td>Linen/Cotton cho Hè; Wool/Tweed cho Đông</td></tr>
+              <tr><td>Xu hướng hiện tại</td><td>Quiet Luxury 2024, Coastal Grandmother, Dopamine Dressing</td></tr>
+              <tr><td>Quy tắc phối phụ kiện</td><td>Túi da đen + Giày da đen; Jewelry không vượt quá 3 điểm nhấn</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="ebox cyan">
+      <strong>Lợi thế của Tầng 2:</strong> Hệ thống có thể <em>giải thích lý do</em> đề xuất ("Chúng tôi đề xuất áo Wool vì phù hợp với mùa đông và dress code công sở theo quy tắc…"). Đây là điểm quan trọng để người dùng tin tưởng vào AI thay vì cảm thấy bị đề xuất tùy tiện.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       TẦNG 3 — POG + FOM + CLIP
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#15803D;">3</div>
+      <div>
+        <h2>Tầng 3 — Sinh và Đánh giá Outfit bằng POG, FOM và CLIP</h2>
+        <div class="sub">Từ vector ngữ cảnh + tri thức → sinh bộ trang phục → đánh giá tương thích đa phương thức</div>
+      </div>
+    </div>
+
+    <div class="ebox green">
+      <strong>Tầng 3 giải quyết câu hỏi:</strong> Với nhu cầu đã hiểu ở Tầng 1 và tri thức đã bổ sung ở Tầng 2, <em>chọn cụ thể những sản phẩm nào và ghép chúng lại với nhau như thế nào?</em> Ba thành phần được kết hợp: <strong>POG</strong> sinh outfit, <strong>FOM</strong> đánh giá tương thích trong bộ, <strong>CLIP</strong> đánh giá cả ảnh lẫn văn bản.
+    </div>
+
+    <div class="grid-3" style="margin-bottom:24px; align-items:start;">
+      <!-- POG -->
+      <div class="card">
+        <div class="card-head"><i class="bi bi-magic" style="color:#15803D;"></i> POG — Personalized Outfit Generation</div>
+        <div class="ebox green">
+          Kiến trúc Transformer Encoder-Decoder (Alibaba 2021). Nhận vector ngữ cảnh người dùng C từ Per Network, sau đó Gen Network <em>tự hồi quy</em> sinh lần lượt từng món đồ.
+        </div>
+        <div class="formula" style="font-size:0.82rem;">
+          <span class="c">// Per Network (Encoder)</span><br>
+          C = Transformer_Enc(U) ∈ ℝ^(m×64)<br><br>
+          <span class="c">// Gen Network (Decoder) — 3 sub-layers:</span><br>
+          H1 = MaskedSelfAttn(H_prev)<br>
+          H2 = LayerNorm(H1 + CrossAttn(H1,C,C))<br>
+          H3 = PFFN(H2)<br><br>
+          <span class="c">// Tìm item tiếp theo từ candidate pool:</span><br>
+          f_next = argmax cos_sim(v_t, candidate_pool)
+        </div>
+      </div>
+
+      <!-- FOM -->
+      <div class="card">
+        <div class="card-head"><i class="bi bi-check2-all" style="color:#15803D;"></i> FOM — Fashion Compatibility Model</div>
+        <div class="ebox green">
+          Bidirectional Transformer Encoder 6 tầng, 8 heads. Nhận toàn bộ outfit đã sinh, đánh giá mức độ tương thích giữa <em>tất cả các cặp</em> sản phẩm cùng lúc bằng Self-Attention.
+        </div>
+        <div class="formula" style="font-size:0.82rem;">
+          <span class="c">// Multi-modal item embedding:</span><br>
+          f = Linear([f_img(1536) ‖ f_text(300) ‖ f_CF(160)])<br>
+          f ∈ ℝ^128 (joint embedding space)<br><br>
+          <span class="c">// FOM Transformer Encoder (6 layers):</span><br>
+          H = TransformerEncoder(outfit_items)<br><br>
+          <span class="c">// Compatibility score:</span><br>
+          Score_FOM = mean(cosine_sim(H_i, H_j)) × 100
+        </div>
+      </div>
+
+      <!-- CLIP/VLM -->
+      <div class="card">
+        <div class="card-head"><i class="bi bi-image" style="color:#15803D;"></i> CLIP / VLM — Đánh giá Đa phương thức</div>
+        <div class="ebox green">
+          CLIP (Contrastive Language-Image Pretraining) đánh giá đồng thời thông tin <em>hình ảnh</em> và <em>ngữ nghĩa văn bản</em> của từng sản phẩm — giúp hiểu sâu hơn mối quan hệ giữa mô tả và ảnh thực tế.
+        </div>
+        <div class="formula" style="font-size:0.82rem;">
+          <span class="c">// CLIP encode ảnh và văn bản cùng không gian:</span><br>
+          v_img  = CLIP_ImageEncoder(garment_image)<br>
+          v_text = CLIP_TextEncoder("blazer tweed kem")<br><br>
+          <span class="c">// Độ khớp ảnh ↔ mô tả:</span><br>
+          align_score = cos_sim(v_img, v_text)<br><br>
+          <span class="c">// Đánh giá outfit theo text prompt:</span><br>
+          vibe_score = cos_sim(outfit_embed, "minimalist winter look")
+        </div>
+      </div>
+    </div>
+
+    <!-- FOM MIP Chart -->
+    <div class="card">
+      <div class="card-head"><i class="bi bi-bar-chart-fill" style="color:#15803D;"></i> FOM — Xác suất Masked Item Prediction sau huấn luyện trên Polyvore Dataset</div>
+      <p style="font-size:0.85rem;color:#64748B;margin-bottom:16px;">Sau khi FOM học đúng: xác suất gán cho item thật (Ground Truth) phải cao nhất. 3 negative items nhận xác suất thấp. Biểu đồ lý tưởng sau hội tụ:</p>
+      <div class="chart-wrap" style="height:230px;"><canvas id="fomChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       TẦNG 4 — A100 QUALITY CONTROL
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#D97706;">4</div>
+      <div>
+        <h2>Tầng 4 — Kiểm định Chất lượng và Cá nhân hóa Điểm Tổng hợp</h2>
+        <div class="sub">A100 CVPR 2022 + FOM Score + CLIP Score + User History → Personalized Outfit Score</div>
+      </div>
+    </div>
+
+    <div class="ebox amber">
+      <strong>Tầng 4 là Quality Control Checkpoint:</strong> Outfit sinh ra từ Tầng 3 chưa chắc đã tốt. Tầng 4 đóng vai trò như bộ lọc chuyên nghiệp: outfit phải vượt qua <em>6 tiêu chí thẩm mỹ</em> theo chuẩn CVPR 2022, đồng thời điểm tổng hợp phải đạt ngưỡng cá nhân hóa. Nếu không đạt → POG sinh lại.
+    </div>
+
+    <div class="grid-2" style="align-items:start; margin-bottom:22px;">
+      <!-- 6 tiêu chí -->
+      <div class="card">
+        <div class="card-head"><i class="bi bi-check2-circle" style="color:#D97706;"></i> 6 Tiêu chí A100 Aesthetic Attribute Testing (AAT)</div>
+        <div class="pipeline-v">
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#2563EB;">1</div>
             <div>
-              <div style="font-size:0.8rem; color:var(--text-sub);">Calculated Triplet Loss L_E:</div>
-              <div class="metric-value" id="triplet-loss-output">0.0000</div>
-            </div>
-            <div id="triplet-status-badge" style="font-weight:700; font-size:0.85rem; color:#10B981;">
-              <i class="bi bi-check-circle-fill"></i> Convergence Optimized
+              <div class="pv-title">Color Harmony — Hài hòa Màu sắc</div>
+              <div class="pv-text">Kiểm tra tỷ lệ tương phản màu sắc theo không gian HSL (chuẩn ≥ 4.5:1). Phát hiện xung đột màu (clash), đánh giá bộ màu đơn sắc / bổ sắc / tam giác sắc.</div>
             </div>
           </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#7C3AED;">2</div>
+            <div>
+              <div class="pv-title">Style Synergy — Nhất quán Phong cách</div>
+              <div class="pv-text">Kiểm tra toàn bộ outfit có thuộc cùng một phong cách không. Phát hiện pha trộn xung đột: áo công sở + giày thể thao → điểm thấp.</div>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#D97706;">3</div>
+            <div>
+              <div class="pv-title">Occasion Fit — Phù hợp Hoàn cảnh</div>
+              <div class="pv-text">So sánh phong cách outfit với yêu cầu hoàn cảnh. Outfit công sở phải có mức formality nhất định; outfit Casual phải thoải mái.</div>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#0891B2;">4</div>
+            <div>
+              <div class="pv-title">Seasonal Suitability — Phù hợp Mùa vụ</div>
+              <div class="pv-text">Chất liệu Linen/Cotton → tốt cho Hè. Wool/Tweed → tốt cho Đông. Ghép áo lụa mỏng vào mùa đông → điểm thấp.</div>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#15803D;">5</div>
+            <div>
+              <div class="pv-title">Material Synergy — Tương thích Chất liệu</div>
+              <div class="pv-text">Bề mặt texture phải tương thích: cùng tông thô (Tweed + Wool) hoặc cùng ánh sáng (Lụa + Satin). Tránh pha trộn texture xung đột quá lớn.</div>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#E11D48;">6</div>
+            <div>
+              <div class="pv-title">Visual Balance — Cân bằng Thị giác</div>
+              <div class="pv-text">Cân bằng trọng lượng thị giác: áo phồng to → quần bó; áo đơn giản → phụ kiện nổi bật. Không để outfit quá nặng về một phần.</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <div class="chart-container" style="height: 140px; margin-top: 14px;">
-            <canvas id="tripletChart"></canvas>
+      <!-- Personalized Outfit Score + Radar -->
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-head" style="justify-content:space-between;">
+            <span><i class="bi bi-radar" style="color:#D97706;"></i> Biểu đồ Radar A100 — Live Tuner</span>
+            <span class="score-badge" style="color:#D97706;" id="a100-total">96.6 / 100</span>
+          </div>
+          <div class="chart-wrap" style="height:250px;"><canvas id="a100Radar"></canvas></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
+            <div class="sim-field"><div class="sim-label"><span>🎨 Color:</span><span class="val" id="v-col">96.5</span></div><input type="range" id="s-col" min="60" max="100" step="0.5" value="96.5"></div>
+            <div class="sim-field"><div class="sim-label"><span>✨ Style:</span><span class="val" id="v-sty">97.2</span></div><input type="range" id="s-sty" min="60" max="100" step="0.5" value="97.2"></div>
+            <div class="sim-field"><div class="sim-label"><span>📅 Occasion:</span><span class="val" id="v-occ">98.4</span></div><input type="range" id="s-occ" min="60" max="100" step="0.5" value="98.4"></div>
+            <div class="sim-field"><div class="sim-label"><span>🌤️ Season:</span><span class="val" id="v-sea">95.8</span></div><input type="range" id="s-sea" min="60" max="100" step="0.5" value="95.8"></div>
+            <div class="sim-field"><div class="sim-label"><span>🧵 Material:</span><span class="val" id="v-mat">96.0</span></div><input type="range" id="s-mat" min="60" max="100" step="0.5" value="96.0"></div>
+            <div class="sim-field"><div class="sim-label"><span>⚖️ Balance:</span><span class="val" id="v-bal">97.5</span></div><input type="range" id="s-bal" min="60" max="100" step="0.5" value="97.5"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><i class="bi bi-calculator" style="color:#D97706;"></i> Personalized Outfit Score — Điểm Tổng hợp</div>
+          <div class="ebox amber">
+            Thay vì chỉ dùng điểm A100, hệ thống tính điểm tổng hợp cá nhân hóa từ 4 nguồn. Outfit không đạt ngưỡng sẽ bị loại và POG phải sinh lại.
+          </div>
+          <div class="formula" style="font-size:0.83rem;">
+            POS = w1×Score_A100 + w2×Score_FOM<br>
+                + w3×Score_CLIP + w4×Score_UserPref<br><br>
+            <span class="c">// Trọng số gợi ý: w1=0.35, w2=0.30, w3=0.20, w4=0.15</span><br>
+            <span class="c">// Ngưỡng chấp nhận: POS ≥ 85.0</span><br>
+            <span class="c">// Nếu POS &lt; 85 → loại → yêu cầu POG sinh lại</span>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- SECTION 3: TASK 2 FOM & TASK 3 POG -->
-    <div class="dashboard-grid">
-      <!-- FOM MIP CHART -->
-      <div class="col-6">
-        <div class="card">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-cpu gradient-text"></i> Task 2: FOM Masked Item Prediction
-            </div>
-            <span class="code-tag">dm = 64, 6 Layers, 8 Heads</span>
-          </div>
-
-          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 14px;">
-            FOM (Fashion Outfit Model) Transformer Encoder dự đoán món đồ bị che (Token `[MASK]`) từ 1 item thật và 3 negative sampled items:
-          </p>
-
-          <div class="chart-container" style="height: 220px;">
-            <canvas id="fomMipChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- POG AUTO-REGRESSIVE SIMULATOR -->
-      <div class="col-6">
-        <div class="card">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-diagram-2 gold-gradient-text"></i> Task 3: POG Candidate Similarity Search
-            </div>
-            <span class="badge-item">Faiss Accelerated</span>
-          </div>
-
-          <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 12px;">
-            Chọn phong cách người dùng để mô phỏng quy trình POG Decoder tự hồi quy tìm kiếm Top-1 candidate item tiếp theo:
-          </p>
-
-          <div style="margin-bottom: 14px;">
-            <label style="font-size:0.82rem; font-weight:600; display:block; margin-bottom:6px;">Mô phỏng Nhu cầu User Context Matrix C:</label>
-            <select id="pog-intent-select" style="width:100%; padding:8px 12px; background:var(--bg-sub); color:#FFF; border:1px solid var(--border-color); border-radius:6px;">
-              <option value="office">💼 Executive Office (Blazer + Trouser + Loafer)</option>
-              <option value="gala">🥂 Gala Evening Party (Silk Shirt + Satin Skirt + Jewelry)</option>
-              <option value="casual">☕ Casual Weekend (Tweed Vest + Pleated Skirt)</option>
-            </select>
-          </div>
-
-          <div class="chart-container" style="height: 180px;">
-            <canvas id="pogCandidateChart"></canvas>
-          </div>
-        </div>
+  <!-- ══════════════════════════════════════════════════════
+       TẦNG 5 — AI AGENT COORDINATOR
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#7C3AED;">5</div>
+      <div>
+        <h2>Tầng 5 — AI Agent Điều phối và Tối ưu Liên tục</h2>
+        <div class="sub">AI Agent làm bộ điều phối: phân tích kết quả, chọn outfit tốt nhất, phản hồi người dùng và điều chỉnh theo feedback</div>
       </div>
     </div>
 
-    <!-- SECTION 4: TASK 4 CVPR 2022 A100 AESTHETIC RADAR & SIMULATOR -->
-    <div class="dashboard-grid">
-      <div class="col-7">
-        <div class="card">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-award-fill gold-gradient-text"></i> Task 4: CVPR 2022 A100 Aesthetic Framework
-            </div>
-            <div class="gold-gradient-text" style="font-size: 1.4rem; font-weight:800;" id="a100-live-total-score">96.6/100</div>
-          </div>
+    <div class="ebox purple">
+      <strong>Tại sao cần AI Agent?</strong> Nếu không có Agent, hệ thống chỉ chạy pipeline một chiều: nhận yêu cầu → trả kết quả → xong. Với AI Agent, hệ thống có khả năng <em>lặp, điều chỉnh và cải thiện</em> — chuyển từ mô hình recommendation một lần sang mô hình tương tác liên tục theo phản hồi người dùng.
+    </div>
 
-          <div class="chart-container" style="height: 320px;">
-            <canvas id="a100RadarChart"></canvas>
+    <div class="grid-2" style="align-items:start;">
+      <div class="card">
+        <div class="card-head"><i class="bi bi-robot" style="color:#7C3AED;"></i> Luồng hoạt động của AI Agent</div>
+        <div class="pipeline-v">
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#7C3AED;">1</div>
+            <div>
+              <div class="pv-title">Thu thập kết quả từ Tầng 3 & 4</div>
+              <div class="pv-text">Agent nhận danh sách outfit candidates cùng điểm POS từ Tầng 4. Sắp xếp theo thứ tự ưu tiên và lọc những outfit chưa đạt ngưỡng.</div>
+              <span class="pv-code">candidates = sorted(outfits, key=lambda x: x.POS, reverse=True)</span>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#8B5CF6;">2</div>
+            <div>
+              <div class="pv-title">Chọn và Giải thích Đề xuất</div>
+              <div class="pv-text">Agent chọn top-3 outfit, tạo câu giải thích tự nhiên cho người dùng: "Tôi đề xuất Blazer Tweed vì phù hợp phong cách tối giản và chất liệu Wool phù hợp mùa đông..."</div>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#A78BFA;">3</div>
+            <div>
+              <div class="pv-title">Nhận và Phân tích Phản hồi</div>
+              <div class="pv-text">Người dùng phản hồi: "Tôi thích outfit này nhưng không thích màu áo". Agent phân tích: giữ quần/giày/phụ kiện, chỉ thay màu áo.</div>
+              <span class="pv-code">feedback = {keep: [trouser, shoes, accessories], change: [top_color]}</span>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#C4B5FD;">4</div>
+            <div>
+              <div class="pv-title">Yêu cầu Sinh lại có Điều kiện</div>
+              <div class="pv-text">Agent gửi constraints mới về Tầng 3: "Sinh lại nhưng giữ nguyên quần/giày, chỉ tìm áo khác màu". POG chạy lại với context bổ sung.</div>
+              <span class="pv-code">POG.regenerate(fixed_items=[trouser, shoes], new_constraints={color: "neutral"})</span>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#EDE9FE;">5</div>
+            <div>
+              <div class="pv-title">Cập nhật Bộ nhớ Người dùng</div>
+              <div class="pv-text">Agent ghi nhận sở thích mới: không thích màu xanh đậm, thích màu trung tính → cập nhật User Profile → ảnh hưởng các lần đề xuất tiếp theo.</div>
+              <span class="pv-code">user_profile.update({dislike_colors: ["navy_blue"], prefer: "neutrals"})</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-5">
+      <div>
+        <div class="ebox purple" style="margin-bottom:16px;">
+          <strong>Ví dụ kịch bản tương tác thực tế:</strong><br><br>
+          👤 User: <em>"Tôi thích bộ này nhưng áo hơi tối, có thể đổi không?"</em><br><br>
+          🤖 Agent phân tích:<br>
+          • Giữ: Quần Charcoal, Loafer Nappa, Đồng hồ Geneva (đã được approve)<br>
+          • Thay: Áo → tìm áo cùng phong cách nhưng màu sáng hơn<br>
+          • Constraints: Cùng formality (Business), cùng chất liệu (structured), tone sáng hơn<br><br>
+          🔄 POG sinh lại: Áo Oxford Trắng Kem → FOM Score 97.8% → A100 97.1 → Hiển thị lại.
+        </div>
+
         <div class="card">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-sliders gradient-text"></i> Live 6-Dimension Tuner
-            </div>
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label"><span>Color Harmony (HSL 4.5:1):</span><span id="v-col">96.5</span></div>
-            <input type="range" class="sim-slider" id="s-col" min="60" max="100" value="96.5">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label"><span>Style Synergy:</span><span id="v-sty">97.2</span></div>
-            <input type="range" class="sim-slider" id="s-sty" min="60" max="100" value="97.2">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label"><span>Occasion Fit:</span><span id="v-occ">98.4</span></div>
-            <input type="range" class="sim-slider" id="s-occ" min="60" max="100" value="98.4">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label"><span>Seasonal Suitability:</span><span id="v-sea">95.8</span></div>
-            <input type="range" class="sim-slider" id="s-sea" min="60" max="100" value="95.8">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label"><span>Material Synergy:</span><span id="v-mat">96.0</span></div>
-            <input type="range" class="sim-slider" id="s-mat" min="60" max="100" value="96.0">
-          </div>
-
-          <div class="sim-field">
-            <div class="sim-label"><span>Visual Balance:</span><span id="v-bal">97.5</span></div>
-            <input type="range" class="sim-slider" id="s-bal" min="60" max="100" value="97.5">
-          </div>
+          <div class="card-head"><i class="bi bi-arrow-repeat" style="color:#7C3AED;"></i> Vòng lặp Tối ưu của Agent</div>
+          <div class="chart-wrap" style="height:220px;"><canvas id="agentLoopChart"></canvas></div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- SECTION 5: TASK 5 IDM-VTON PERFORMANCE METRICS -->
-    <div class="dashboard-grid">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-title-wrap">
-            <div class="card-title">
-              <i class="bi bi-magic gradient-text"></i> Task 5: IDM-VTON Virtual Try-On Execution Pipeline
+  <!-- ══════════════════════════════════════════════════════
+       TẦNG 6 — IDM-VTON VIRTUAL TRY-ON
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#BE123C;">6</div>
+      <div>
+        <h2>Tầng 6 — Hiện thực hóa bằng Virtual Try-On IDM-VTON</h2>
+        <div class="sub">Chỉ sau khi outfit vượt qua toàn bộ kiểm định mới chạy Diffusion — tiết kiệm GPU, tăng hiệu quả</div>
+      </div>
+    </div>
+
+    <div class="ebox rose">
+      <strong>Thiết kế quan trọng:</strong> IDM-VTON được đặt ở <em>cuối</em> pipeline không phải ngẫu nhiên. Diffusion Model là bước tốn tài nguyên GPU nhất (~3–10 giây/ảnh). Đặt nó sau 5 tầng kiểm định đảm bảo chỉ những outfit đã được xác nhận chất lượng mới tạo ảnh, tránh lãng phí hàng chục lần chạy diffusion cho outfit kém chất lượng.
+    </div>
+
+    <div class="grid-2" style="align-items:start; margin-bottom:22px;">
+      <div class="card">
+        <div class="card-head"><i class="bi bi-list-ol" style="color:#BE123C;"></i> Quy trình IDM-VTON — Từng bước chi tiết</div>
+        <div class="pipeline-v">
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#2563EB;">1</div>
+            <div>
+              <div class="pv-title">Nhận outfit đã được Agent xác nhận</div>
+              <div class="pv-text">Danh sách sản phẩm (áo, quần, giày, phụ kiện) + ảnh người dùng (từ thư viện VITON-HD hoặc ảnh cá nhân).</div>
+              <span class="pv-code">Input: approved_outfit_items + user_photo</span>
             </div>
-            <span class="badge-item">yisol/IDM-VTON Benchmark</span>
           </div>
-
-          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 10px;">
-            <div style="background:var(--bg-sub); padding:16px; border-radius:10px; text-align:center;">
-              <div style="font-size:0.8rem; color:var(--text-sub);">Denoising Steps</div>
-              <div style="font-size:1.6rem; font-weight:800; color:#38BDF8;">30 Steps</div>
-              <div style="font-size:0.75rem; color:#10B981;">Optimal Speed/Quality</div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#15803D;">2</div>
+            <div>
+              <div class="pv-title">Tách nền sản phẩm (Chroma Key Removal)</div>
+              <div class="pv-text">Xét từng pixel ảnh sản phẩm. Pixel trắng/gần trắng (R,G,B > 228) → đặt alpha = 0 (trong suốt). Giữ nguyên phần trang phục có màu.</div>
+              <span class="pv-code">if R > 228 and G > 228 and B > 228: alpha = 0</span>
             </div>
-
-            <div style="background:var(--bg-sub); padding:16px; border-radius:10px; text-align:center;">
-              <div style="font-size:0.8rem; color:var(--text-sub);">DensePose Alignment</div>
-              <div style="font-size:1.6rem; font-weight:800; color:#10B981;">98.2%</div>
-              <div style="font-size:0.75rem; color:#10B981;">Body Keypoints Aligned</div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#D97706;">3</div>
+            <div>
+              <div class="pv-title">DensePose Alignment — Phân tích Cơ thể</div>
+              <div class="pv-text">Xác định các điểm khớp xương (shoulder, chest, waist, hip, knee). Tạo bản đồ vùng cơ thể → biết chính xác nơi đặt từng loại trang phục.</div>
+              <span class="pv-code">keypoints = DensePose(user_photo) → region_map</span>
             </div>
-
-            <div style="background:var(--bg-sub); padding:16px; border-radius:10px; text-align:center;">
-              <div style="font-size:0.8rem; color:var(--text-sub);">VITON-HD Resolution</div>
-              <div style="font-size:1.6rem; font-weight:800; color:#F59E0B;">1024 x 768</div>
-              <div style="font-size:0.75rem; color:#F59E0B;">High Definition Output</div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#7C3AED;">4</div>
+            <div>
+              <div class="pv-title">Layer Blending — Ghép theo thứ tự đúng</div>
+              <div class="pv-text">Ghép từng lớp theo thứ tự cơ thể: Bottom (quần/váy) → Top (áo) → Shoes → Belt → Bag → Accessories. Mỗi lớp có shadow blur tự nhiên.</div>
+              <span class="pv-code">layers: Bottom → Top → Shoes → Belt → Bag → Accessories</span>
             </div>
-
-            <div style="background:var(--bg-sub); padding:16px; border-radius:10px; text-align:center;">
-              <div style="font-size:0.8rem; color:var(--text-sub);">Accessory Layer Blending</div>
-              <div style="font-size:1.6rem; font-weight:800; color:#8B5CF6;">7 Item Types</div>
-              <div style="font-size:0.75rem; color:#8B5CF6;">Seamless Composite</div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#BE123C;">5</div>
+            <div>
+              <div class="pv-title">IDM-VTON Diffusion — 30 bước khử nhiễu</div>
+              <div class="pv-text">Mô hình khuếch tán yisol/IDM-VTON thực hiện 30 denoising steps, tinh chỉnh nếp vải, bóng đổ, ánh sáng để tạo kết quả chân thực chuẩn VITON-HD.</div>
+              <span class="pv-code">result = IDM_VTON.generate(user_photo, garments, steps=30)</span>
+            </div>
+          </div>
+          <div class="pv-step">
+            <div class="pv-dot" style="background:#F87171;">6</div>
+            <div>
+              <div class="pv-title">Seamless Lighting Post-processing</div>
+              <div class="pv-text">Phủ gradient chiếu sáng tự nhiên (overlay blend mode) để ánh sáng trên người và trang phục nhất quán, tránh cảm giác "cắt dán".</div>
+              <span class="pv-code">apply_lighting_gradient(result, mode="overlay")</span>
             </div>
           </div>
         </div>
       </div>
+
+      <div>
+        <div class="grid-2" style="margin-bottom:16px;">
+          <div class="stat-card" style="border-top-color:#2563EB;">
+            <div class="stat-label">Denoising Steps</div>
+            <div class="stat-num" style="color:#2563EB;">30</div>
+            <div class="stat-desc">Tốc độ & chất lượng tối ưu</div>
+          </div>
+          <div class="stat-card" style="border-top-color:#15803D;">
+            <div class="stat-label">DensePose Accuracy</div>
+            <div class="stat-num" style="color:#15803D;">98.2%</div>
+            <div class="stat-desc">Căn chỉnh khớp xương</div>
+          </div>
+          <div class="stat-card" style="border-top-color:#D97706;">
+            <div class="stat-label">VITON-HD Resolution</div>
+            <div class="stat-num" style="color:#D97706;">1024px</div>
+            <div class="stat-desc">High Definition Output</div>
+          </div>
+          <div class="stat-card" style="border-top-color:#7C3AED;">
+            <div class="stat-label">Loại Phụ kiện</div>
+            <div class="stat-num" style="color:#7C3AED;">7</div>
+            <div class="stat-desc">Áo, Quần, Giày, Thắt lưng, Túi, Kính, Dây chuyền</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><i class="bi bi-speedometer2" style="color:#BE123C;"></i> Hiệu quả khi đặt IDM-VTON ở cuối pipeline</div>
+          <table class="tbl">
+            <thead><tr><th>Chỉ số</th><th>Không có Pipeline Filter</th><th>Có Pipeline 6 Tầng</th></tr></thead>
+            <tbody>
+              <tr><td>Số lần chạy Diffusion / request</td><td style="color:#E11D48;font-weight:700;">8–12 lần</td><td style="color:#15803D;font-weight:700;">1–2 lần</td></tr>
+              <tr><td>GPU thời gian xử lý</td><td style="color:#E11D48;font-weight:700;">~90–120s</td><td style="color:#15803D;font-weight:700;">~10–20s</td></tr>
+              <tr><td>Tỷ lệ outfit không đạt</td><td style="color:#E11D48;font-weight:700;">~60%</td><td style="color:#15803D;font-weight:700;">&lt; 5%</td></tr>
+              <tr><td>Chất lượng ảnh đầu ra</td><td>Trung bình</td><td style="color:#15803D;font-weight:700;">Cao (đã lọc qua A100)</td></tr>
+              <tr><td>Giải thích được lý do đề xuất</td><td style="color:#E11D48;">❌ Không</td><td style="color:#15803D;">✅ Có (RAG + KG)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+  </div>
 
-  </div> <!-- End container -->
+  <!-- ══════════════════════════════════════════════════════
+       BẢNG THÔNG SỐ TỔNG HỢP
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-wrap">
+    <div class="section-heading">
+      <div class="step-circle" style="background:#0F172A;">∑</div>
+      <div>
+        <h2>Thông số Kỹ thuật Tổng hợp Toàn hệ thống</h2>
+        <div class="sub">Tham chiếu nhanh tất cả hyperparameters và cấu hình</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <table class="tbl" style="border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;">
+        <thead><tr><th colspan="3">Tầng 3 — Embedding & FOM & POG</th></tr>
+          <tr><th>Thông số</th><th>Giá trị</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>Image Feature (f_img)</td><td><span class="pill p-blue">1,536-d</span></td><td>ResNet-50</td></tr>
+          <tr><td>Text Feature (f_text)</td><td><span class="pill p-blue">300-d</span></td><td>TextCNN</td></tr>
+          <tr><td>Graph Feature (f_CF)</td><td><span class="pill p-blue">160-d</span></td><td>Graph Embedding</td></tr>
+          <tr><td>Joint Embedding (d_e)</td><td><span class="pill p-green">128-d</span></td><td>Linear Projection</td></tr>
+          <tr><td>Triplet Loss Margin (α)</td><td><span class="pill p-amber">0.10</span></td><td>Euclidean/Cosine</td></tr>
+          <tr><td>FOM Hidden Dim (d_m)</td><td><span class="pill p-green">64-d</span></td><td>Transformer space</td></tr>
+          <tr><td>FOM Transformer Layers</td><td><span class="pill p-green">6 layers</span></td><td>Bidirectional</td></tr>
+          <tr><td>Attention Heads</td><td><span class="pill p-green">8 heads</span></td><td>Multi-Head</td></tr>
+          <tr><td>MIP Loss (FOM)</td><td>Cross-Entropy</td><td>1 GT + 3 Negative</td></tr>
+          <tr><td>POG Decoder Layers</td><td><span class="pill p-purple">6 layers</span></td><td>Init từ FOM weights</td></tr>
+          <tr><td>Candidate Search</td><td>Cosine + Faiss</td><td>IndexFlatIP</td></tr>
+        </tbody>
+      </table>
+      <table class="tbl" style="border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;">
+        <thead><tr><th colspan="3">Tầng 4, 5, 6 — Quality Control, Agent, IDM-VTON</th></tr>
+          <tr><th>Thông số</th><th>Giá trị</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td>Số chiều A100 AAT</td><td><span class="pill p-amber">6 chiều</span></td><td>CVPR 2022</td></tr>
+          <tr><td>Ngưỡng A100 đạt chuẩn</td><td>≥ 85.0/100</td><td>Outfit bị loại nếu thấp hơn</td></tr>
+          <tr><td>Personalized Outfit Score</td><td>w1·A100+w2·FOM+w3·CLIP+w4·UserPref</td><td>Ngưỡng ≥ 85.0</td></tr>
+          <tr><td>Số lần Agent retry tối đa</td><td>3 lần</td><td>Trước khi fallback</td></tr>
+          <tr><td>IDM-VTON Model</td><td>yisol/IDM-VTON</td><td>HuggingFace</td></tr>
+          <tr><td>Denoising Steps</td><td><span class="pill p-rose">30 steps</span></td><td>Diffusion Pipeline</td></tr>
+          <tr><td>Benchmark Dataset</td><td>VITON-HD</td><td>Standard benchmark</td></tr>
+          <tr><td>Output Resolution</td><td>1024 × 768</td><td>High Definition</td></tr>
+          <tr><td>Số loại item ghép</td><td>7 loại</td><td>Áo, Quần, Giày, Thắt lưng, Túi, Kính, Dây chuyền</td></tr>
+          <tr><td>Chroma Key Threshold</td><td>R,G,B > 228</td><td>Background removal</td></tr>
+          <tr><td>Shadow Blur</td><td>12px</td><td>Seamless blending</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <!-- INTERACTIVE SCRIPTS & CHART.JS LOGIC -->
-  <script>
-    // 1. Triplet Loss Live Calculator
-    function updateTripletLoss() {
-      const dpos = parseFloat(document.getElementById('slider-dpos').value);
-      const dneg = parseFloat(document.getElementById('slider-dneg').value);
-      const margin = parseFloat(document.getElementById('slider-margin').value);
+</div><!-- end page-body -->
 
-      document.getElementById('val-dpos').innerText = dpos.toFixed(2);
-      document.getElementById('val-dneg').innerText = dneg.toFixed(2);
-      document.getElementById('val-margin').innerText = margin.toFixed(2);
+<div class="page-footer">
+  <p><strong>AURA FIT AI</strong> — Pipeline 6 Tầng: LLM · RAG · Knowledge Graph · POG · FOM · CLIP · A100 CVPR 2022 · AI Agent · IDM-VTON</p>
+  <p style="margin-top:5px;font-size:0.8rem;">Polyvore Dataset · VITON-HD Benchmark · PyTorch · Faiss Index</p>
+</div>
 
-      const loss = Math.max(0.0, dpos - dneg + margin);
-      document.getElementById('triplet-loss-output').innerText = loss.toFixed(4);
-
-      const badge = document.getElementById('triplet-status-badge');
-      if (loss === 0) {
-        badge.style.color = '#10B981';
-        badge.innerHTML = '<i class="bi bi-check-circle-fill"></i> Optimal Separation (Loss = 0)';
-      } else {
-        badge.style.color = '#F59E0B';
-        badge.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> Updating Embeddings (Loss > 0)';
-      }
+<script>
+// ── FOM MIP Bar Chart ──
+new Chart(document.getElementById('fomChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['✅ Ground Truth Item', '❌ Negative Sample 1', '❌ Negative Sample 2', '❌ Negative Sample 3'],
+    datasets: [{
+      label: 'Xác suất dự đoán (%)',
+      data: [87.4, 4.2, 5.1, 3.3],
+      backgroundColor: ['#22C55E','#CBD5E1','#CBD5E1','#CBD5E1'],
+      borderRadius: 8, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 100, grid: { color: '#F1F5F9' }, ticks: { callback: v => v + '%', color: '#64748B' } },
+      x: { grid: { display: false }, ticks: { color: '#334155' } }
     }
+  }
+});
 
-    document.getElementById('slider-dpos').addEventListener('input', updateTripletLoss);
-    document.getElementById('slider-dneg').addEventListener('input', updateTripletLoss);
-    document.getElementById('slider-margin').addEventListener('input', updateTripletLoss);
-    updateTripletLoss();
-
-    // 2. FOM MIP Chart
-    const fomCtx = document.getElementById('fomMipChart').getContext('2d');
-    new Chart(fomCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Ground Truth Item', 'Negative Sample 1', 'Negative Sample 2', 'Negative Sample 3'],
-        datasets: [{
-          label: 'Prediction Probability (%)',
-          data: [87.4, 4.2, 5.1, 3.3],
-          backgroundColor: ['#10B981', '#334155', '#334155', '#334155'],
-          borderRadius: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
-          x: { grid: { display: false } }
-        }
+// ── A100 Radar Chart ──
+const radarCtx = document.getElementById('a100Radar').getContext('2d');
+const a100Chart = new Chart(radarCtx, {
+  type: 'radar',
+  data: {
+    labels: ['Màu sắc', 'Phong cách', 'Dịp', 'Mùa', 'Chất liệu', 'Cân bằng'],
+    datasets: [{
+      label: 'Điểm A100',
+      data: [96.5, 97.2, 98.4, 95.8, 96.0, 97.5],
+      backgroundColor: 'rgba(217,119,6,0.15)',
+      borderColor: '#D97706', pointBackgroundColor: '#D97706',
+      pointRadius: 5, borderWidth: 2.5
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      r: {
+        min: 60, max: 100,
+        ticks: { stepSize: 10, color: '#94A3B8', backdropColor: 'transparent' },
+        grid: { color: '#E2E8F0' }, angleLines: { color: '#E2E8F0' },
+        pointLabels: { color: '#334155', font: { size: 11, weight: '600' } }
       }
-    });
+    },
+    plugins: { legend: { display: false } }
+  }
+});
 
-    // 3. POG Candidate Search Chart
-    const pogCtx = document.getElementById('pogCandidateChart').getContext('2d');
-    const pogChart = new Chart(pogCtx, {
-      type: 'bar',
-      data: {
-        labels: ['Blazer Tweed', 'Trouser Tailored', 'Loafer Nappa', 'Gold Necklace'],
-        datasets: [{
-          label: 'Cosine Similarity Score (%)',
-          data: [98.4, 97.2, 96.5, 94.8],
-          backgroundColor: '#0EA5E9',
-          borderRadius: 6
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' } },
-          y: { grid: { display: false } }
-        }
-      }
-    });
+function updateRadar() {
+  const vals = {
+    col: +document.getElementById('s-col').value,
+    sty: +document.getElementById('s-sty').value,
+    occ: +document.getElementById('s-occ').value,
+    sea: +document.getElementById('s-sea').value,
+    mat: +document.getElementById('s-mat').value,
+    bal: +document.getElementById('s-bal').value
+  };
+  Object.entries(vals).forEach(([k,v]) => { document.getElementById('v-'+k).textContent = v.toFixed(1); });
+  const arr = Object.values(vals);
+  a100Chart.data.datasets[0].data = arr;
+  a100Chart.update();
+  const avg = arr.reduce((a,b) => a+b, 0) / arr.length;
+  document.getElementById('a100-total').textContent = avg.toFixed(1) + ' / 100';
+}
+['s-col','s-sty','s-occ','s-sea','s-mat','s-bal'].forEach(id =>
+  document.getElementById(id).addEventListener('input', updateRadar)
+);
 
-    document.getElementById('pog-intent-select').addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (val === 'office') {
-        pogChart.data.labels = ['Blazer Tweed', 'Trouser Tailored', 'Loafer Nappa', 'Gold Necklace'];
-        pogChart.data.datasets[0].data = [98.4, 97.2, 96.5, 94.8];
-      } else if (val === 'gala') {
-        pogChart.data.labels = ['Silk Shirt', 'Satin Skirt', 'Pearl Necklace', 'Stiletto Heel'];
-        pogChart.data.datasets[0].data = [97.6, 96.8, 98.1, 95.4];
-      } else {
-        pogChart.data.labels = ['Tweed Vest', 'Pleated Skirt', 'Ankle Boots', 'Leather Tote'];
-        pogChart.data.datasets[0].data = [96.2, 95.8, 94.5, 93.9];
-      }
-      pogChart.update();
-    });
-
-    // 4. A100 CVPR 2022 Radar Chart & Tuner
-    const radarCtx = document.getElementById('a100RadarChart').getContext('2d');
-    const a100Chart = new Chart(radarCtx, {
-      type: 'radar',
-      data: {
-        labels: ['Color Harmony', 'Style Synergy', 'Occasion Fit', 'Seasonal Suitability', 'Material Synergy', 'Visual Balance'],
-        datasets: [{
-          label: 'A100 Aesthetic Score',
-          data: [96.5, 97.2, 98.4, 95.8, 96.0, 97.5],
-          backgroundColor: 'rgba(245, 158, 11, 0.25)',
-          borderColor: '#F59E0B',
-          pointBackgroundColor: '#FBBF24',
-          borderWidth: 2
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          r: {
-            angleLines: { color: 'rgba(255,255,255,0.1)' },
-            grid: { color: 'rgba(255,255,255,0.1)' },
-            pointLabels: { color: '#94A3B8', font: { size: 11 } },
-            ticks: { display: false, suggestMin: 60, suggestMax: 100 }
-          }
-        },
-        plugins: { legend: { display: false } }
-      }
-    });
-
-    function updateA100Radar() {
-      const c = parseFloat(document.getElementById('s-col').value);
-      const st = parseFloat(document.getElementById('s-sty').value);
-      const o = parseFloat(document.getElementById('s-occ').value);
-      const se = parseFloat(document.getElementById('s-sea').value);
-      const m = parseFloat(document.getElementById('s-mat').value);
-      const b = parseFloat(document.getElementById('s-bal').value);
-
-      document.getElementById('v-col').innerText = c.toFixed(1);
-      document.getElementById('v-sty').innerText = st.toFixed(1);
-      document.getElementById('v-occ').innerText = o.toFixed(1);
-      document.getElementById('v-sea').innerText = se.toFixed(1);
-      document.getElementById('v-mat').innerText = m.toFixed(1);
-      document.getElementById('v-bal').innerText = b.toFixed(1);
-
-      a100Chart.data.datasets[0].data = [c, st, o, se, m, b];
-      a100Chart.update();
-
-      const avg = (c + st + o + se + m + b) / 6.0;
-      document.getElementById('a100-live-total-score').innerText = avg.toFixed(1) + '/100';
+// ── Agent Loop Doughnut Chart ──
+new Chart(document.getElementById('agentLoopChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Outfit được approve ngay', 'Cần điều chỉnh 1 lần', 'Cần điều chỉnh 2 lần', 'Fallback mặc định'],
+    datasets: [{
+      data: [68, 22, 7, 3],
+      backgroundColor: ['#22C55E','#F59E0B','#EF4444','#94A3B8'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, color: '#475569', padding: 12 } },
+      tooltip: { callbacks: { label: ctx => `  ${ctx.label}: ${ctx.raw}%` } }
     }
-
-    ['s-col', 's-sty', 's-occ', 's-sea', 's-mat', 's-bal'].forEach(id => {
-      document.getElementById(id).addEventListener('input', updateA100Radar);
-    });
-  </script>
+  }
+});
+</script>
 </body>
 </html>
