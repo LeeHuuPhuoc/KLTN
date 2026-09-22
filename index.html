@@ -46,6 +46,9 @@
         <button class="btn btn-outline" id="open-arch-modal-btn">
           <i class="bi bi-diagram-3-fill"></i> Kiến Trúc AI
         </button>
+        <a href="technical_analysis.html" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">
+          <i class="bi bi-graph-up-arrow"></i> Phân Tích Kỹ Thuật AI
+        </a>
       </div>
     </header>
 
@@ -445,34 +448,77 @@
   <!-- MODAL 3: ACADEMIC ARCHITECTURE MODAL                                -->
   <!-- =================================================================== -->
   <div class="modal-backdrop" id="arch-modal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 850px; max-height: 90vh; overflow-y: auto;">
       <div class="modal-header">
-        <h2 style="font-size: 1.3rem;" class="gradient-text">
+        <h2 style="font-size: 1.35rem;" class="gradient-text">
           🏛️ Sơ Đồ Kiến Trúc AI Tư Vấn Phối Đồ & Thử Đồ Ảo IDM-VTON
         </h2>
         <button class="close-modal-btn" id="close-arch-modal-btn">&times;</button>
       </div>
 
-      <div style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 16px;">
-        Kiến trúc 4 tầng hợp nhất giải quyết bài toán tư vấn phối đồ cá nhân hóa kết hợp thử đồ ảo và kiểm định thẩm mỹ theo nghiên cứu CVPR 2022 & dữ liệu Polyvore Dataset.
+      <div style="font-size: 0.9rem; color: var(--text-sub); margin-bottom: 20px; line-height: 1.5;">
+        Hệ thống ứng dụng <strong>Kiến trúc 4 Tầng Hợp Nhất</strong> giải quyết trọn vẹn bài toán tư vấn phối đồ cá nhân hóa, dự đoán độ tương thích thời trang, đánh giá thẩm mỹ chuyên ngành và ghép đồ ảo trực quan dựa trên các nghiên cứu gốc CVPR 2022, Alibaba POG & Polyvore Dataset.
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:12px;">
-        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
-          <strong style="color:var(--primary);">TẦNG 1: TƯƠNG TÁC NGƯỜI DÙNG & LLM CHATBOT ADVISOR</strong><br>
-          LLM Chatbot thu thập Nhu cầu, Dịp (Occasion), Sở thích cá nhân và trích xuất thành Context Tokens.
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <!-- TẦNG 1 -->
+        <div style="background:var(--bg-sub); padding:16px; border-radius:10px; border-left:4px solid var(--primary);">
+          <div style="font-weight:700; color:var(--primary); font-size:1.02rem; margin-bottom:6px;">
+            💬 TẦNG 1: TƯƠNG TÁC NGƯỜI DÙNG & LLM CHATBOT ADVISOR (Context Extraction)
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-sub); margin-bottom:8px; line-height:1.5;">
+            Trợ lý LLM Advisor phân tích câu hỏi/nhu cầu ngôn ngữ tự nhiên của người dùng, bóc tách các thuộc tính thực thể: Dịp xuất hiện (Occasion: Công sở, Dạ tiệc, Tiệc cưới, Casual), Thời tiết/Mùa (Season), Phong cách cá nhân (Style), và Lịch sử tương tác.
+          </p>
+          <div style="font-size:0.82rem; background:rgba(2, 132, 199, 0.08); padding:8px 12px; border-radius:6px; color:#0369A1;">
+            ⚙️ <strong>Kỹ thuật:</strong> Nhu cầu người dùng được mã hóa thành các <strong>Context Tokens</strong> và ma trận bối cảnh người dùng $C \in \mathbb{R}^{m \times d_m}$ ($d_m=64$) truyền trực tiếp vào Gen Network của Tầng 2.
+          </div>
         </div>
-        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
-          <strong style="color:var(--primary);">TẦNG 2: MÔ HÌNH GỢI Ý CÁ NHÂN HÓA (POLYVORE COMPATIBILITY MATRIX)</strong><br>
-          Ma trận tính toán độ tương thích thời trang giữa Top, Bottom, Shoes, Bag & Phụ kiện.
+
+        <!-- TẦNG 2 -->
+        <div style="background:var(--bg-sub); padding:16px; border-radius:10px; border-left:4px solid var(--secondary);">
+          <div style="font-weight:700; color:var(--secondary); font-size:1.02rem; margin-bottom:6px;">
+            🧩 TẦNG 2: MÔ HÌNH GỢI Ý CÁ NHÂN HÓA (POLYVORE COMPATIBILITY MATRIX - POG & FOM)
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-sub); margin-bottom:8px; line-height:1.5;">
+            Khối thuật toán cốt lõi tính toán độ tương thích thời trang giữa Top, Bottom, Shoes, Bag & Phụ kiện dựa trên 3 module Deep Learning:
+          </p>
+          <ul style="font-size:0.83rem; color:var(--text-sub); margin-left:18px; margin-bottom:10px; line-height:1.6;">
+            <li><strong>Multi-modal Embedding ($d_e=128$):</strong> Kết hợp đặc trưng Ảnh ResNet-50 ($1536$-d), Văn bản TextCNN ($300$-d) và Đồ thị Graph CF ($160$-d). Huấn luyện bằng <code>TripletMarginLoss</code> ($\alpha=0.1$) để thu hẹp khoảng cách Euclidean/Cosine giữa các item tương hợp.</li>
+            <li><strong>Fashion Outfit Model (FOM):** Mô hình Bidirectional Transformer Encoder 6 lớp ($d_m=64$, 8 heads) học mối quan hệ tương thích giữa các món đồ qua nhiệm vụ <code>Masked Item Prediction (MIP)</code>.</li>
+            <li><strong>Personalized Outfit Generator (POG):** Kiến trúc Encoder-Decoder (Per Network mã hóa lịch sử người dùng + Gen Network Decoder tự hồi quy có Cross-Attention) sinh trang phục cá nhân hóa top-1 qua Cosine Similarity Search (tăng tốc bằng Faiss Index).</li>
+          </ul>
         </div>
-        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
-          <strong style="color:var(--accent-gold);">TẦNG 3: ĐÁNH GIÁ THẨM MỸ CHUYÊN NGÀNH (A100 FRAMEWORK - CVPR 2022)</strong><br>
-          Kiểm định AAT theo 6 chiều: Màu sắc, Phong cách, Dịp, Mùa, Chất liệu và Cân bằng.
+
+        <!-- TẦNG 3 -->
+        <div style="background:var(--bg-sub); padding:16px; border-radius:10px; border-left:4px solid var(--accent-gold);">
+          <div style="font-weight:700; color:var(--accent-gold); font-size:1.02rem; margin-bottom:6px;">
+            📊 TẦNG 3: ĐÁNH GIÁ THẨM MỸ CHUYÊN NGÀNH (A100 FRAMEWORK - CVPR 2022)
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-sub); margin-bottom:8px; line-height:1.5;">
+            Khung kiểm định Aesthetic Attribute Testing (AAT) theo công trình nghiên cứu CVPR 2022 đánh giá outfit chuẩn chuyên môn theo 6 chiều thẩm mỹ:
+          </p>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; font-size:0.81rem; color:var(--text-sub);">
+            <div>• <strong>Color Harmony:</strong> Phối màu HSL chuẩn 4.5:1.</div>
+            <div>• <strong>Style Synergy:</strong> Nhất quán phong cách thiết kế.</div>
+            <div>• <strong>Occasion Fit:</strong> Phù hợp ngữ cảnh xuất hiện.</div>
+            <div>• <strong>Seasonal Suitability:</strong> Phù hợp thời tiết/mùa.</div>
+            <div>• <strong>Material Synergy:</strong> Tương thích chất liệu vải.</div>
+            <div>• <strong>Visual Balance:</strong> Cân bằng tỷ lệ thị giác.</div>
+          </div>
         </div>
-        <div style="background:var(--bg-sub); padding:14px; border-radius:8px;">
-          <strong style="color:var(--primary);">TẦNG 4: TRỰC QUAN HÓA THỬ ĐỒ ẢO (IDM-VTON DIFFUSION ENGINE - VITON-HD)</strong><br>
-          Mô hình Khuếch tán IDM-VTON kết hợp DensePose alignment ghép trang phục & phụ kiện lên ảnh người dùng với độ chân thực cao.
+
+        <!-- TẦNG 4 -->
+        <div style="background:var(--bg-sub); padding:16px; border-radius:10px; border-left:4px solid #8B5CF6;">
+          <div style="font-weight:700; color:#8B5CF6; font-size:1.02rem; margin-bottom:6px;">
+            🖼️ TẦNG 4: TRỰC QUAN HÓA THỬ ĐỒ ẢO (IDM-VTON DIFFUSION ENGINE - VITON-HD)
+          </div>
+          <p style="font-size:0.86rem; color:var(--text-sub); margin-bottom:8px; line-height:1.5;">
+            Trực quan hóa trang phục & phụ kiện đã chọn lên ảnh người dùng với độ chân thực cao:
+          </p>
+          <ul style="font-size:0.83rem; color:var(--text-sub); margin-left:18px; line-height:1.6;">
+            <li><strong>IDM-VTON Diffusion Pipeline:</strong> Sử dụng mô hình khuếch tán <code>yisol/IDM-VTON</code> chuẩn dataset <strong>VITON-HD</strong>.</li>
+            <li><strong>DensePose Alignment & Layer Blending:</strong> Tự động căn chỉnh dáng người (Pose Estimation), tách nền sản phẩm (Chroma Keying), và tự động đặt đúng vị trí cơ thể (Áo, Quần, Giày, Thắt lưng, Dây chuyền, Kính, Túi xách) kèm hiệu ứng bóng đổ và chiếu sáng tự nhiên.</li>
+          </ul>
         </div>
       </div>
     </div>
