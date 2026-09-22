@@ -227,17 +227,101 @@ h1, h2, h3, h4 {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* PAGE 1: CATALOG VIEW */
+/* PAGE 1: CATALOG VIEW - GROUNDED FASHION STORE BANNER */
 .catalog-header-banner {
-  background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%);
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1px solid #334155;
   border-radius: var(--radius-lg);
-  padding: 28px 36px;
+  padding: 30px 40px;
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #F8FAFC;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
 }
+
+.banner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #93C5FD;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.catalog-header-banner h1 {
+  color: #FFFFFF !important;
+  font-size: 1.75rem !important;
+  font-weight: 800;
+  margin-bottom: 6px !important;
+  letter-spacing: -0.02em;
+}
+
+.banner-icon-wrap {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: #93C5FD;
+  flex-shrink: 0;
+}
+
+/* FontAwesome to Bootstrap Icons Fallback Compatibility */
+.fa-solid, .fa-regular, .fa-brands, .fa {
+  font-family: "bootstrap-icons" !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -0.125em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.fa-wand-magic-sparkles::before, .fa-sparkles::before { content: "\F563" !important; }
+.fa-bookmark::before { content: "\F194" !important; }
+.fa-star::before { content: "\F586" !important; }
+.fa-diagram-project::before { content: "\F2DA" !important; }
+.fa-shirt::before, .fa-box-open::before { content: "\F1E2" !important; }
+.fa-sliders::before { content: "\F569" !important; }
+.fa-brain::before { content: "\F2D5" !important; }
+.fa-calendar-day::before { content: "\F1E7" !important; }
+.fa-cloud-sun::before, .fa-sun::before { content: "\F5A8" !important; }
+.fa-palette::before { content: "\F4AC" !important; }
+.fa-magnifying-glass::before { content: "\F52A" !important; }
+.fa-arrow-left::before { content: "\F12C" !important; }
+.fa-file-pdf::before { content: "\F389" !important; }
+.fa-bag-shopping::before { content: "\F181" !important; }
+.fa-user-gear::before { content: "\F4E6" !important; }
+.fa-upload::before { content: "\F601" !important; }
+.fa-circle-check::before { content: "\F26B" !important; }
+.fa-vr-cardboard::before { content: "\F328" !important; }
+.fa-chart-pie::before { content: "\F4F8" !important; }
+.fa-download::before { content: "\F30A" !important; }
+.fa-comments::before { content: "\F27B" !important; }
+.fa-robot::before { content: "\F520" !important; }
+.fa-paper-plane::before { content: "\F526" !important; }
+.fa-award::before { content: "\F190" !important; }
+.fa-rotate-left::before { content: "\F117" !important; }
+.fa-trash::before { content: "\F5DE" !important; }
+.fa-briefcase::before { content: "\F1C8" !important; }
+.fa-champagne-glasses::before { content: "\F64C" !important; }
+.fa-ring::before { content: "\F798" !important; }
+.fa-mug-hot::before { content: "\F302" !important; }
+.fa-plane::before { content: "\F4EC" !important; }
+.fa-snowflake::before { content: "\F561" !important; }
 
 /* ADVISORY CONTEXT WIDGET */
 .advisory-widget-card {
