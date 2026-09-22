@@ -227,55 +227,358 @@ h1, h2, h3, h4 {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* PAGE 1: CATALOG VIEW - GROUNDED FASHION STORE BANNER */
+/* PAGE 1: CATALOG VIEW - ANIMATED BIG HERO FASHION IMAGE BANNER */
 .catalog-header-banner {
-  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
-  border: 1px solid #334155;
+  position: relative;
+  min-height: 440px;
+  background-color: #0F172A;
+  border: 1px solid rgba(147, 197, 253, 0.3);
   border-radius: var(--radius-lg);
-  padding: 30px 40px;
-  margin-bottom: 24px;
+  padding: 44px 50px;
+  margin-bottom: 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: #F8FAFC;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+  box-shadow: 0 16px 40px -10px rgba(15, 23, 42, 0.35);
+  overflow: hidden;
 }
 
+/* Background Image Layer with Parallax / Zoom animation */
+.banner-bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transform: scale(1);
+  transition: transform 6s ease;
+  z-index: 0;
+  animation: heroImageZoom 20s infinite alternate ease-in-out;
+}
+
+.catalog-header-banner:hover .banner-bg-image {
+  transform: scale(1.06);
+}
+
+@keyframes heroImageZoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+/* Multi-layer Gradient Overlay for crisp text legibility & high luxury editorial aesthetic */
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg, 
+    rgba(15, 23, 42, 0.94) 0%, 
+    rgba(15, 23, 42, 0.82) 45%, 
+    rgba(15, 23, 42, 0.45) 75%, 
+    rgba(15, 23, 42, 0.2) 100%
+  );
+  z-index: 1;
+}
+
+/* Radial Glow Accent Overlay */
+.banner-radial-glow {
+  position: absolute;
+  top: -50%;
+  left: -20%;
+  width: 70%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.3) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Subtle Geometric Tech Grid Overlay */
+.banner-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Banner Content Wrapper */
+.banner-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+}
+
+/* Animated Tag */
 .banner-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
   color: #93C5FD;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 4px 12px;
+  letter-spacing: 0.06em;
+  padding: 5px 14px;
   border-radius: 999px;
-  margin-bottom: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 12px;
+  border: 1px solid rgba(147, 197, 253, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.catalog-header-banner h1 {
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 10px #10B981;
+  animation: livePulse 1.6s infinite ease-in-out;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px #10B981; }
+  50% { transform: scale(1.4); opacity: 0.6; box-shadow: 0 0 16px #10B981; }
+}
+
+.tag-divider {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.tag-highlight {
+  color: #FDBA74;
+}
+
+/* Banner Headline */
+.banner-headline {
   color: #FFFFFF !important;
-  font-size: 1.75rem !important;
+  font-size: 1.85rem !important;
   font-weight: 800;
-  margin-bottom: 6px !important;
+  line-height: 1.25;
+  margin-bottom: 8px !important;
   letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.banner-icon-wrap {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  width: 72px;
-  height: 72px;
+.sparkle-icon {
+  color: #38BDF8;
+  display: inline-block;
+  animation: sparkleRotate 4s ease-in-out infinite;
+}
+
+@keyframes sparkleRotate {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.25) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
+}
+
+.banner-subtext {
+  font-size: 1.02rem;
+  color: #CBD5E1;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+}
+
+/* Banner Feature Pills */
+.banner-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.b-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #F1F5F9;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.b-pill:hover {
+  background: rgba(2, 132, 199, 0.35);
+  border-color: #38BDF8;
+  color: #FFF;
+  transform: translateY(-2px);
+}
+
+.b-pill i {
+  color: #38BDF8;
+}
+
+/* Banner CTA Buttons Group */
+.banner-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn-banner-primary {
+  background: linear-gradient(135deg, #0284C7, #0EA5E9);
+  color: #FFF !important;
+  padding: 12px 24px;
   border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-banner-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(2, 132, 199, 0.6);
+  background: linear-gradient(135deg, #0369A1, #0284C7);
+}
+
+.btn-banner-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #FFFFFF !important;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-banner-secondary:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #FFFFFF;
+  color: #FFF !important;
+  transform: translateY(-2px);
+}
+
+/* Banner Right Visual Box & Animated Elements */
+.banner-visual-wrap {
+  position: relative;
+  width: 110px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
-  color: #93C5FD;
   flex-shrink: 0;
+  z-index: 2;
+}
+
+.glowing-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 24px;
+  background: conic-gradient(from 0deg, #0284C7, #0EA5E9, #7C3AED, #0284C7);
+  animation: rotateRing 6s linear infinite;
+  opacity: 0.75;
+  filter: blur(3px);
+}
+
+@keyframes rotateRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.banner-icon-box {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  background: #0F172A;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: #38BDF8;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.banner-visual-wrap:hover .banner-icon-box {
+  transform: scale(1.06) rotate(4deg);
+  color: #7DD3FC;
+}
+
+/* Floating Badges */
+.float-badge {
+  position: absolute;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #F8FAFC;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  z-index: 3;
+}
+
+.fb-1 {
+  top: -10px;
+  left: -45px;
+  animation: floatBadge1 4s ease-in-out infinite alternate;
+}
+
+.fb-2 {
+  bottom: -8px;
+  right: -35px;
+  animation: floatBadge2 5s ease-in-out infinite alternate;
+}
+
+@keyframes floatBadge1 {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+@keyframes floatBadge2 {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(8px); }
+}
+
+.text-emerald { color: #10B981 !important; }
+.text-sky { color: #38BDF8 !important; }
+
+/* Responsive Adjustments for Big Banner */
+@media (max-width: 868px) {
+  .catalog-header-banner {
+    min-height: 360px;
+    padding: 30px 24px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .banner-headline {
+    font-size: 1.65rem !important;
+  }
+  .banner-visual-wrap {
+    align-self: flex-end;
+    margin-top: -10px;
+  }
 }
 
 /* FontAwesome to Bootstrap Icons Fallback Compatibility */
